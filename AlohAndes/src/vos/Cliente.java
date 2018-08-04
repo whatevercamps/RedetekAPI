@@ -1,158 +1,195 @@
 package vos;
+
 import java.util.List;
 
-import javax.*;
-
 import org.codehaus.jackson.annotate.JsonProperty;
-/**
- * 
- * Clase que representa a un cliente 
- *
- */
-
 
 public class Cliente {
 	
+
+	@JsonProperty("estado")
+	private String estado;
 	
-	//Constantes de tipo
-	private static int ESTUDIANTE=1;
-	private static int EGRESADO=2;
-	private static int PROFESOR=3;
-	private static int EMPLEADO=4;
-	private static int PADRE_DE_ESTUDIANTE=5;
-	private static int PROFESOR_INVITADO=6;
-	//Atributos de la entidad
-	/**
-	 * codigo que reoresenta a un cliente
-	 */
-	@JsonProperty(value="codigo")
-	protected Long codigo;
-	/**
-	 * Nmbre de un cliente
-	 */
-	@JsonProperty(value="nombre")
-	protected String nombre;
-	/**
-	 * apellido de un cliente
-	 */	
-	@JsonProperty(value="apellido")
-	protected String apellido;
-	/**
-	 * Define la relacion con la entidad tiene que ser alguno de los siguientes:Estudiante; Egresado, Empleado,Profesores,PadresDeEstudiante,ProfesoresInvitados
-	 */
-	@JsonProperty(value="tipo")
-	protected Integer tipo;
-	/**
-	 * Relacion que permite a un cliente acceder a la lista de sus reservas actuales y antiguas
-	 */
-	@JsonProperty(value="historia")
-	protected List<Factura> historia;
-
-	///Metodo constructor 
-
-	public Cliente(@JsonProperty(value="codigo")Long codigo,
-			@JsonProperty(value="nombre")String nombre,
-			@JsonProperty(value="Appellido")String apellido,
-			@JsonProperty(value="tipo")Integer tipo,
-			@JsonProperty(value="historia") List<Factura> historia)
-	{
-		this.codigo=codigo;
-		this.nombre=nombre;
-		this.apellido=apellido;	
-		if(tipo==ESTUDIANTE||tipo==EGRESADO||tipo==PADRE_DE_ESTUDIANTE
-		   ||tipo==EMPLEADO||tipo==PROFESOR||tipo==PROFESOR_INVITADO)
-		{
-			this.tipo=tipo;
-		}
-		if(historia!=null)
-		{	
-			this.historia=historia;
-		}
+	@JsonProperty("cedula")
+	private Long cedula;
+	
+	@JsonProperty("octeto4")
+	private Integer octeto4;
+	
+	@JsonProperty("nombre")
+	private String nombre;
+	
+	@JsonProperty("octeto1")
+	private Integer octeto1;
+	
+	@JsonProperty("octeto2")
+	private Integer octeto2;
+	
+	@JsonProperty("octeto3")
+	private Integer octeto3;
+	
+	@JsonProperty("direccion")
+	private String direccion;
+	
+	@JsonProperty("email")
+	private String email;
+	
+	@JsonProperty("telefono")
+	private Long telefono;
+	
+	@JsonProperty("nombreNodo")
+	private String nombreNodo;
+	
+	public String getNombreNodo() {
+		return nombreNodo;
 	}
+
+	public void setNombreNodo(String nombreNodo) {
+		this.nombreNodo = nombreNodo;
+	}
+
+	@JsonProperty("plan")
+	private Plan plan;
+	
+	@JsonProperty("dispositivos")
+	private List<Dispositivo> dispositivos;
+	
 	public Cliente() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
-	//Metodos getter y setter
-	/**
-	 * 
-	 * @return codigo de el cliente
-	 */
-	public Long getCodigo() {
-		return this.codigo;
+
+	public Cliente(
+			@JsonProperty("cedula") Long cedula, 
+			@JsonProperty("octeto4") Integer octeto4, 
+			@JsonProperty("nombre") String nombre, 
+			@JsonProperty("direccion") String direccion, 
+			@JsonProperty("email") String email,
+			@JsonProperty("telefono") Long telefono,
+			@JsonProperty("plan") Plan plan) {
+		super();
+		this.estado = "Inactivo";
+		this.cedula = cedula;
+		this.octeto4 = octeto4;
+		this.nombre = nombre;
+		this.direccion = direccion;
+		this.email = email;
+		this.telefono = telefono;
+		this.plan = plan;
 	}
-	/**
-	 * 
-	 * @return nombre de el cliente
-	 */
+
+
+
+	
+	
+	public String getEstado() {
+		return estado;
+	}
+
+	public void activarEstado() {
+		this.estado = "Activo";
+	}
+	
+	public void desactivarEstado() {
+		this.estado = "Inactivo";
+	}
+
+	public List<Dispositivo> getDispositivos() {
+		return dispositivos;
+	}
+
+	public void setDispositivos(List<Dispositivo> dispositivos) {
+		this.dispositivos = dispositivos;
+	}
+
+	public Plan getPlan() {
+		return plan;
+	}
+
+	public void setPlan(Plan plan) {
+		this.plan = plan;
+	}
+
+	public Integer getOcteto1() {
+		return octeto1;
+	}
+
+	public void setOcteto1(Integer octeto1) {
+		this.octeto1 = octeto1;
+	}
+
+	public Integer getOcteto2() {
+		return octeto2;
+	}
+
+	public void setOcteto2(Integer octeto2) {
+		this.octeto2 = octeto2;
+	}
+
+	public Integer getOcteto3() {
+		return octeto3;
+	}
+
+	public void setOcteto3(Integer octeto3) {
+		this.octeto3 = octeto3;
+	}
+
 	public String getNombre() {
-		return this.nombre;
+		return nombre;
 	}
-	/**
-	 * 
-	 * @return apellido del cliente
-	 */
-	public String getApellido() {
-		return this.apellido;
-	}
-	/**
-	 * 
-	 * @return tipo de relacion con la insitucion
-	 */
 
-	public int getTipo() {
-		return this.tipo;
+	public String getEmail() {
+		return email;
 	}
-	/**
-	 * 
-	 * @return contrato de un cliente
-	 */
-	public List<Factura> getHistoris() {
-		return this.historia;
+
+
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+
+
+	public Long getTelefono() {
+		return telefono;
+	}
+
+
+
+	public void setTelefono(Long telefono) {
+		this.telefono = telefono;
+	}
+
+
+	public Integer getOcteto4() {
+		return octeto4;
+	}
+
+	public void setOcteto4(Integer octeto4) {
+		this.octeto4 = octeto4;
+	}
+
+
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public Long getCedula() {
+		return cedula;
+	}
+
+	public void setCedula(Long cedula) {
+		this.cedula = cedula;
+	}
+
+	public String getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
 	}
 	
-	/**
-	 * 
-	 * @param myCodigo de identificacion 
-	 */
-	public void setCodigo(Long myCodigo) {
-		this.codigo = myCodigo;
-	}
 	
-	/**
-	 * 
-	 * @param myNombre del cliente
-	 */
-	public void setNombre(String myNombre) {
-		this.nombre = myNombre;
-	}
 	
-	/**
-	 * 
-	 * @param myApellido apellido del cliente
-	 */
-	public void setApellido(String myApellido) {
-		this.apellido = myApellido;
-	}
-
-	/**
-	 * 
-	 * @param myTipo tipo de relacion con la  institucion
-	 */
-	public void setTipo(int myTipo) {
-		this.tipo = myTipo;
-	}
-
-	/**
-	 * 
-	 * @param myContrato contrato nuevo 
-	 */
-	public void setContrato(List<Factura> myContrato) {
-		this.historia = myContrato;
-	}
-
-
-
 }
-
-
-

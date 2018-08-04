@@ -9,7 +9,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -23,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import dao.DAOTablaClientes;
 import tm.RedetekApiTM;
 import vos.Cliente;
+import vos.Nodo;
 import vos.Dispositivo;
 
 
@@ -34,8 +34,8 @@ import vos.Dispositivo;
  * @author David Bautista
  */
 
-@Path("clientes")
-public class ClienteResorce {
+@Path("planes")
+public class PlanResource {
 
 	@XmlRootElement
 	public static class DatosPago {
@@ -58,65 +58,29 @@ public class ClienteResorce {
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON } )
 	@Produces({ MediaType.APPLICATION_JSON } )
-	public Response crearCliente(Cliente cliente, @QueryParam("idNodo")Long idNodo) throws SQLException, Exception{
+	public Response crearPlan(Nodo nodo) throws SQLException, Exception{
 		System.out.println("entreeeeee");
-
+		
 		RedetekApiTM tm = new RedetekApiTM(getPath());
 		try {
-			Cliente clienteNew = tm.crearCliente(cliente, idNodo);
-			return Response.status( 200 ).entity( clienteNew ).build();	
+			Nodo nodoNew = tm.crearNodo(nodo);
+			return Response.status( 200 ).entity( nodoNew ).build();	
 		}catch( Exception e )
 		{
 			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );
 		}
 	}
-
+	
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON } )
-	public Response darClientes() throws SQLException, Exception{
+	public Response darPlanes() throws SQLException, Exception{
 		RedetekApiTM tm = new RedetekApiTM(getPath());
 		try {
-
-			return Response.status( 200 ).entity( tm.darClientesPor(0, "hola") ).build();	
+			
+			return Response.status( 200 ).entity( tm.darPlanesPor(0, "hola") ).build();	
 		}catch( Exception e )
 		{
 			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );
 		}
 	}
-
-	@GET
-	@Path("{id: \\d+}")
-	@Produces({ MediaType.APPLICATION_JSON } )
-	public Response darCliente(@PathParam("id") Long id) throws SQLException, Exception{
-		RedetekApiTM tm = new RedetekApiTM(getPath());
-		try {
-			List<Cliente> encontrado = tm.darClientesPor(DAOTablaClientes.BUSQUEDA_POR_CEDULA, id.toString());
-			if(encontrado.isEmpty())
-				throw new Exception("No existe un cliente con la cédula " + id);
-			return Response.status( 200 ).entity( encontrado.get(0) ).build();	
-		}catch( Exception e )
-		{
-			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );
-		}
-	}
-
-	@PUT
-	@Path("{id: \\d+}")
-	@Consumes({ MediaType.APPLICATION_JSON } )
-	@Produces({ MediaType.APPLICATION_JSON } )
-	public Response modificarCliente(Cliente cliente, @QueryParam("idNodo")Long idNodo, @QueryParam("idCliente") Long idCliente)throws SQLException, Exception{
-		System.out.println("entreeeeee");
-
-		RedetekApiTM tm = new RedetekApiTM(getPath());
-		try {
-			Cliente clienteNew = tm.modificarCliente(idCliente, cliente, idNodo);
-			return Response.status( 200 ).entity( clienteNew ).build();	
-		}catch( Exception e )
-		{
-			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );
-		}
-	}
-
-
-
 }

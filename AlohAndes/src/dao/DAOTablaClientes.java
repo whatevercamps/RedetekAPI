@@ -8,14 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vos.Cliente;
-import vos.Factura;
-import vos.Reserva;
+import vos.Plan;
+import vos.Dispositivo;
 
 
 public class DAOTablaClientes {
-	
+
 	public final static String USUARIO = "PARRANDEROS";
-	public static final int BUSQUEDA_POR_RESERVA = 0;
+	public static final int BUSQUEDA_POR_CEDULA = 1;
+	public static final int BUSQUEDA_POR_ID_NODO = 2;
 	private ArrayList<Object> recursos;
 
 	private Connection conn;
@@ -41,36 +42,15 @@ public class DAOTablaClientes {
 	}
 
 
-	public List<Cliente> darClientes() throws SQLException, Exception {
-		ArrayList<Cliente> clientes = new ArrayList<Cliente>();
-
-		String sentencia = "SELECT * FROM CLIENTES FETCH FIRST 100 ROWS ONLY";
-		PreparedStatement stamnt = conn.prepareStatement(sentencia);
-		recursos.add(stamnt);
-		ResultSet rs = stamnt.executeQuery();
-
-		while(rs.next()) {
-			String name = rs.getString("NOMBRE");
-			Long id = rs.getLong("ID");
-			String appelido = rs.getString("APELLIDO"); 
-			Integer tipo = rs.getInt("TIPO");
-			Cliente cliente = new Cliente(id,name,appelido,tipo,null);
-			
-	
-			clientes.add(cliente);
-		}
-		return clientes;
-	}
-
 
 	public List<Cliente> darClientesPor(int filtro, String parametro) throws SQLException, Exception {
 		List<Cliente> clientes = new ArrayList<Cliente>();
-		String sql = "SELECT CLIENTES.* FROM CLIENTES, RESERVAS, FACTURAS WHERE CLIENTES.ID = ID_CLIENTE AND ID_FACTURA = FACTURAS.ID";
+		String sql = "SELECT CLIENTES.*, OCTETO1, OCTETO2, OCTETO3, NODOS.NOMBRE NOD_NOM FROM CLIENTES, NODOS WHERE CLIENTES.IDNODO = NODOS.ID" ;
 
 		switch(filtro) {
 
-		case BUSQUEDA_POR_RESERVA:
-			sql += " AND CLIENTES.ID = " + parametro + " FETCH FIRST 1 ROWS ONLY";
+		case BUSQUEDA_POR_CEDULA:
+			sql += " AND CEDULA = " + parametro + " AND ROWNUM <= 1";
 			break;
 		default:
 			break;
@@ -78,56 +58,49 @@ public class DAOTablaClientes {
 
 
 		PreparedStatement st = conn.prepareStatement(sql);
+		System.out.println(conn.isValid(1000));
 		recursos.add(st);
 		System.out.println("Filtro: " + filtro + ", paramatro: " + parametro);
 		System.out.println(sql);
 		ResultSet rs = st.executeQuery();
 
 		while(rs.next()) {
-			System.out.println("si hay " + rs.getLong("ID"));
+			System.out.println("si entró");
 			Cliente act = new Cliente();
-			act.setCodigo(rs.getLong("ID"));
+			if(rs.getInt("ESTADO") == 0)
+				act.desactivarEstado();
+			else
+				act.activarEstado();
+			act.setCedula(rs.getLong("CEDULA"));
+			act.setDireccion(rs.getString("DIRECCION"));
+			act.setEmail(rs.getString("EMAIL"));
 			act.setNombre(rs.getString("NOMBRE"));
-			act.setApellido(rs.getString("APELLIDO"));
-			act.setTipo(rs.getInt("AFILIACION"));
+			act.setOcteto4(rs.getInt("OCTETO4"));
+			act.setTelefono(rs.getLong("TELEFONO"));
+			act.setOcteto1(rs.getInt("OCTETO1"));
+			act.setOcteto2(rs.getInt("OCTETO2"));
+			act.setOcteto3(rs.getInt("OCTETO3"));
+			Plan plaTemp = new Plan();
+			plaTemp.setId(rs.getLong("IDPLAN"));
+			act.setPlan(plaTemp);
+			act.setNombreNodo(rs.getString("NOD_NOM"));
 			clientes.add(act);
 
 		}
 		return clientes;
 	}
 
-	public List<Factura> darFacturasCliente(Long idCliente){
-		List<Factura> facturas = new ArrayList<Factura>();
-		return facturas;
-	}
-
-	public Cliente darCliente(Long id) throws SQLException, Exception {
-		Cliente clientePorId = null;
-
-		String sqlClientePorId = "SELECT * FROM CLIENTES WHERE ID = " + id + " FETCH FIRST 1 ROWS ONLY"; 
-		PreparedStatement stClientePorId = conn.prepareStatement(sqlClientePorId);
-		recursos.add(stClientePorId);
-		ResultSet rsClientePorId = stClientePorId.executeQuery();
-
-		if (rsClientePorId.next()) {
-			Long id2 = rsClientePorId.getLong("ID");
-			String nombreClientePorId = rsClientePorId.getString("NOMBRE");
-			String apellidoClientePorId = rsClientePorId.getString("APELLIDO");
-			Integer tipo = rsClientePorId.getInt("AFILIACION");
-			clientePorId = new Cliente(id2, nombreClientePorId, apellidoClientePorId, tipo, null);
-
-		}
-
-		return clientePorId;
-	}
-
-
-	public void crearCliente(Cliente cliente) throws SQLException, Exception {
-		String sql = String.format("INSERT INTO CLIENTES(ID, NOMBRE, APELLIDO, AFILIACION) VALUES ('%1$s', '%2$s', '%3$s', '%4$s')",
-														cliente.getCodigo(),
-														cliente.getNombre(),
-														cliente.getApellido(),
-														cliente.getTipo());
+	public void crearCliente(Cliente cliente, Long idNodo) throws SQLException, Exception {
+		String sql = String.format("INSERT INTO CLIENTES(CEDULA, NOMBRE, DIRECCION, EMAIL, OCTETO4, TELEFONO, IDNODO, IDPLAN) VALUES "
+				+ "(%1$s, '%2$s', '%3$s', '%4$s', %5$s,%6$s, %7$s, %8$s)",
+				cliente.getCedula(),
+				cliente.getNombre(),
+				cliente.getDireccion(),
+				cliente.getEmail(),
+				cliente.getOcteto4(),
+				cliente.getTelefono(),
+				idNodo,
+				cliente.getPlan().getId());
 		System.out.println(sql);
 		System.out.println("paso 1");
 		PreparedStatement st = conn.prepareStatement(sql);
@@ -139,18 +112,22 @@ public class DAOTablaClientes {
 	}
 
 
-	public ResultSet reqCons6(Long idCliente) throws SQLException, Exception {
-		String sql = "SELECT FA.*, A1.* FROM FACTURAS FA LEFT OUTER JOIN "
-				+ "(SELECT RE.ID ID_RES, PR.ID ID_PR, ID_FACTURA, FECHA_INIC, "
-				+ "FECHA_FINA, TIPO, COSTO, DIAS_CANCELACION, NOMBRE FROM RESERVAS RE, "
-				+ "PROPUESTAS PR WHERE RE.ID_PROPUESTA = PR.ID) A1 ON A1.ID_FACTURA = FA.ID "
-				+ "WHERE ID_CLIENTE = " + idCliente;
-		
-		PreparedStatement st = conn.prepareStatement(sql);
-		recursos.add(st);
+	public Boolean borrarCliente(Long idCliente) throws SQLException, Exception {
+		String sql = "DELETE FROM CLIENTES WHERE CEDULA = " + idCliente;
 		System.out.println(sql);
-		ResultSet rs = st.executeQuery();
-		return rs;
+		System.out.println("paso 1");
+		PreparedStatement st = conn.prepareStatement(sql);
+		System.out.println("paso 2");
+		recursos.add(st);
+		System.out.println("paso 3");
+		st.executeQuery();
+		System.out.println("paso 4");
+		return true;
 	}
+
+
+	
+
+
 
 }

@@ -1,7 +1,6 @@
 
-function getCliente(form) {
-	var TestVar = form.id.value;
-	var url = "http://localhost:8080/RotondAndes/rest/clientes/" + TestVar;
+function getClientes(form) {
+	var url = "http://localhost:8080/RedetekAPIRest/rest/clientes/";
 
 	$.getJSON( url, function( json ) {
 		console.log( "JSON Data: " + json.nombre );
