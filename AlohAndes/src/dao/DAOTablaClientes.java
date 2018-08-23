@@ -126,6 +126,29 @@ public class DAOTablaClientes {
 	}
 
 
+	public void modificarCliente(Long idCliente, Cliente nuevo, Long idNodo)throws SQLException, Exception {
+		String sql = String.format("UPDATE CLIENTES SET NOMBRE = '%1$s', DIRECCION = '%2$s', EMAIL = '%3$s', OCTETO4 = %4$s, TELEFONO = %5$s, IDNODO = %6$s, IDPLAN = %7$s, ESTADO = %8$s WHERE CEDULA = %9$s",
+							nuevo.getNombre(), 
+							nuevo.getDireccion(),
+							nuevo.getEmail(),
+							nuevo.getOcteto4(),
+							nuevo.getTelefono(),
+							idNodo,
+							nuevo.getPlan().getId(),
+							(nuevo.getEstado().equalsIgnoreCase("Activo") ? 1 : 0),
+							idCliente);
+							
+							
+		System.out.println(sql);
+		System.out.println("paso 1");
+		PreparedStatement st = conn.prepareStatement(sql);
+		System.out.println("paso 2");
+		recursos.add(st);
+		System.out.println("paso 3");
+		st.executeQuery();
+		System.out.println("paso 4");
+	}
+
 	
 
 

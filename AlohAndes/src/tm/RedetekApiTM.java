@@ -566,7 +566,7 @@ public class RedetekApiTM {
 	public Cliente modificarCliente(Long idCliente, Cliente nuevo, Long idNodo) throws SQLException, Exception{
 		boolean conexionPropia = false; 
 		DAOTablaClientes dao = new DAOTablaClientes();
-		List<Cliente> ret = null;
+		Cliente ret = null;
 		try {
 
 			if(this.conn == null || this.conn.isClosed()){
@@ -580,55 +580,43 @@ public class RedetekApiTM {
 
 			//verificar reglas de negocio
 
-			if (!darClientesPor(DAOTablaClientes.BUSQUEDA_POR_CEDULA, nuevo.getCedula().toString()).isEmpty()) {
-				throw new Exception("Ya hay un cliente con la cedula " + nuevo.getCedula());
-			}
-
-			if (darClientesPor(DAOTablaClientes.BUSQUEDA_POR_CEDULA, nuevo.getCedula().toString()).isEmpty()) {
+			List<Cliente> cli = darClientesPor(DAOTablaClientes.BUSQUEDA_POR_CEDULA, idCliente.toString());
+			if (cli.isEmpty()) {
 				throw new Exception("No hay un cliente con la cedula " + idCliente);
 			}
+			
+			
+			
+			Nodo nd = darNodosPor(DAOTablaNodos.BUSQUEDA_POR_ID, idNodo.toString()).get(0);
+			Cliente cl = cli.get(0);
+			
+			if(nd.getOcteto1() != cl.getOcteto1() || nd.getOcteto2() != cl.getOcteto2() || nd.getOcteto3() != cl.getOcteto3()) {
+				Integer octeto4disp = buscarOcteto4Disponible(idNodo);
 
-
-			Integer octeto4disp = buscarOcteto4Disponible(idNodo);
-
-			if(octeto4disp == null)
-				throw new Exception("El nodo no tiene una ip disponible");
-
-
-			nuevo.setOcteto4(octeto4disp);
-
-
-			List<Plan> plan = darPlanesPor(DAOTablaPlanes.BUSQUEDA_POR_ID, nuevo.getPlan().getId().toString());
-
-			if(plan.isEmpty())
-				throw new Exception("El plan no existe");
-
-
-			nuevo.setPlan(plan.get(0));
-			dao.setConn(conn);
-			dao.crearCliente(nuevo, idNodo);
-
-			System.out.println("lo creo");
-			//verificar 
-
-			ret = darClientesPor(DAOTablaClientes.BUSQUEDA_POR_CEDULA,nuevo.getCedula().toString());
-
-			if(ret.isEmpty()) {
-				throw new Exception("No se guardo correctamente el cliente, revisar xd...");
+				if(octeto4disp == null)
+					throw new Exception("El nodo no tiene una ip disponible");
+				
+				nuevo.setOcteto4(octeto4disp);
+				
 			}
+			
 
-			if(conexionPropia)
-				this.savepoint = this.conn.setSavepoint();
-
-			if(idCliente != nuevo.getCedula()) {
-				trasladarDispositivos(idCliente, ret.get(0).getCedula());
+			if(!idCliente.toString().equalsIgnoreCase(nuevo.getCedula().toString())) {
+				System.out.println("cedula anterior:" + idCliente.toString());
+				System.out.println("cedula nueva:" + nuevo.getCedula().toString());
+				ret = crearCliente(nuevo, idNodo);
+				trasladarDispositivos(idCliente, ret.getCedula());
 				if(conexionPropia)
 					this.savepoint = this.conn.setSavepoint();
+				
+				borrarCliente(idCliente);
+			} else {
+				dao.setConn(this.conn);
+				dao.modificarCliente(idCliente, nuevo, idNodo);
+				ret = nuevo;
 			}
 
-			borrarCliente(idCliente);
-				
-
+		
 
 			if(conexionPropia)
 				this.conn.commit();
@@ -654,7 +642,7 @@ public class RedetekApiTM {
 				throw exception;
 			}
 		}
-		return ret.get(0);
+		return ret;
 	}
 
 	public Boolean trasladarDispositivos(Long anteriorClienteId, Long nuevoClienteId) throws SQLException, Exception{
@@ -674,7 +662,7 @@ public class RedetekApiTM {
 			//verificar reglas de negocio
 
 
-
+			dao.setConn(this.conn);
 
 			dao.trasladarDispositivo(anteriorClienteId, nuevoClienteId);
 
@@ -732,6 +720,7 @@ public class RedetekApiTM {
 
 			//verificar reglas de negocio
 			if(conexionPropia) {
+				System.out.println("idCliente a borrar: " + idCliente);
 				if (darClientesPor(DAOTablaClientes.BUSQUEDA_POR_CEDULA, idCliente.toString()).isEmpty()){
 					throw new Exception("No hay un cliente con la cedula " + idCliente);
 				}

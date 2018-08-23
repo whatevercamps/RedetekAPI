@@ -17,6 +17,7 @@ public class DAOTablaNodos {
 
 	public static final int BUSQUEDA_POR_ID = 1;
 	public static final int BUSQUEDA_POR_OCTETOS = 2;
+	public static final int BUSQUEDA_POR_NOMBRE = 3;
 	private ArrayList<Object> recursos;
 
 	private Connection conn;
@@ -56,6 +57,10 @@ public class DAOTablaNodos {
 			String[] octSp = parametro.split(":");
 			sql += " WHERE OCTETO1 = " + octSp[0] + " AND OCTETO2 = ";
 			sql +=  octSp[1] + " AND OCTETO3 = " + octSp[2] + "AND ROWNUM <=1";
+			break;
+			
+		case BUSQUEDA_POR_NOMBRE:
+			sql += " WHERE NOMBRE = " + parametro + " AND ROWNUM <= 1";
 			break;
 		default:
 			break;

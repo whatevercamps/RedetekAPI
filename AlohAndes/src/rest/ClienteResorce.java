@@ -104,7 +104,7 @@ public class ClienteResorce {
 	@Path("{id: \\d+}")
 	@Consumes({ MediaType.APPLICATION_JSON } )
 	@Produces({ MediaType.APPLICATION_JSON } )
-	public Response modificarCliente(Cliente cliente, @QueryParam("idNodo")Long idNodo, @QueryParam("idCliente") Long idCliente)throws SQLException, Exception{
+	public Response modificarCliente(Cliente cliente, @QueryParam("idNodo")Long idNodo, @PathParam("id") Long idCliente)throws SQLException, Exception{
 		System.out.println("entreeeeee");
 
 		RedetekApiTM tm = new RedetekApiTM(getPath());
@@ -117,6 +117,21 @@ public class ClienteResorce {
 		}
 	}
 
+	@DELETE
+	@Path("{id: \\d+}")
+	@Produces({ MediaType.APPLICATION_JSON } )
+	public Response borrarCliente(@PathParam("id") Long idCliente)throws SQLException, Exception{
+		System.out.println("entreeeeee");
+
+		RedetekApiTM tm = new RedetekApiTM(getPath());
+		try {
+			tm.borrarCliente(idCliente);
+			return Response.status( 200 ).entity( "ok" ).build();	
+		}catch( Exception e )
+		{
+			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );
+		}
+	}
 
 
 }

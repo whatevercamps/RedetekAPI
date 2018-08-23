@@ -83,4 +83,18 @@ public class NodoResource {
 			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );
 		}
 	}
+	
+	@GET
+	@Path("/busq")
+	@Produces({ MediaType.APPLICATION_JSON } )
+	public Response darNodoPor(@QueryParam("filtro") int filtro, @QueryParam("parametro") String parametro) throws SQLException, Exception{
+		RedetekApiTM tm = new RedetekApiTM(getPath());
+		try {
+			
+			return Response.status( 200 ).entity( tm.darNodosPor(filtro, parametro).get(0) ).build();	
+		}catch( Exception e )
+		{
+			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );
+		}
+	}
 }
