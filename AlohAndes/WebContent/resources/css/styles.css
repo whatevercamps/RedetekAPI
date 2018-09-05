@@ -6,7 +6,6 @@
 	color: red;
 }
 
-
 /* The switch - the box around the slider */
 .switch {
   position: relative;
@@ -64,4 +63,10 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }

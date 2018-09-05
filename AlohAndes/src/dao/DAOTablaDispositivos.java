@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vos.Dispositivo;
+import vos.TipoDispositivo;
 
 
 public class DAOTablaDispositivos {
@@ -16,6 +17,7 @@ public class DAOTablaDispositivos {
 	public static final int BUSQUEDA_POR_ID = 1;
 	public static final int BUSQUEDA_POR_MACS = 2;
 	public static final int BUSQUEDA_POR_CLIENTE = 3;
+	public static final int BUSQUEDA_TIPO_POR_DISP = 4;
 	private ArrayList<Object> recursos;
 
 	private Connection conn;
@@ -44,7 +46,7 @@ public class DAOTablaDispositivos {
 
 	public List<Dispositivo> darDispositivosPor(int filtro, String parametro) throws SQLException, Exception {
 		List<Dispositivo> routers = new ArrayList<Dispositivo>();
-		String sql = "SELECT * FROM DISPOSITIVOS, TIPOS_DISPOSITIVOS TIP WHERE TIPO = TIP.ID" ;
+		String sql = "SELECT DI.*, TIP.ID TIPO_ID, TIP.NOMBRE FROM DISPOSITIVOS DI, TIPOS_DISPOSITIVOS TIP WHERE DI.TIPO = TIP.ID" ;
 
 		switch(filtro) {
 
@@ -81,7 +83,6 @@ public class DAOTablaDispositivos {
 			Dispositivo act = new Dispositivo();
 			act.setId(rs.getLong("ID"));
 			act.setDescripcion(rs.getString("DESCRIPCION"));
-			act.setTipo(rs.getString("NOMBRE"));
 			act.setMac1_1(rs.getString("MAC1_1"));
 			act.setMac1_2(rs.getString("MAC1_2"));
 			act.setMac2_1(rs.getString("MAC2_1"));
@@ -90,24 +91,29 @@ public class DAOTablaDispositivos {
 			act.setMac3_2(rs.getString("MAC3_2"));
 			act.setMac4_1(rs.getString("MAC4_1"));
 			act.setMac4_2(rs.getString("MAC4_2"));
+			
+			TipoDispositivo tp = new TipoDispositivo(rs.getLong("TIPO_ID"), rs.getString("NOMBRE"));
 
-
+			act.setTipo(tp);
 			routers.add(act);
 		}
 		return routers;
 	}
 
 
-	public void crearRouter(Dispositivo router) throws SQLException, Exception{
-		String sql = String.format("INSERT INTO ROUTERS(ID, MAC1_1, MAC1_2, MAC2_1, MAC2_2, MAC3_1, MAC3_2, MAC4_1, MAC4_2) VALUES (ROU_SEQUENCE.NEXTVAL, '%1$s', '%2$s', '%3$s', '%4$s', '%5$s','%6$s', '%7$s', '%8$s')",
-				router.getMac1_1(),
-				router.getMac1_2(),
-				router.getMac2_1(),
-				router.getMac2_2(),
-				router.getMac3_1(),
-				router.getMac3_2(),
-				router.getMac4_1(),
-				router.getMac4_2());
+	public void crearDispositivo(Dispositivo disp) throws SQLException, Exception{
+		String sql = String.format("INSERT INTO DISPOSITIVOS(id, descripcion, mac1_1, mac1_2, mac2_1, mac2_2, mac3_1, mac3_2, mac4_1, mac4_2, tipo) "
+				+ "VALUES (ROU_SEQUENCE.NEXTVAL, '%1$s', '%2$s', '%3$s', '%4$s', '%5$s','%6$s', '%7$s', '%8$s', '%9$s', '%10$s')",
+				disp.getDescripcion(),
+				disp.getMac1_1(),
+				disp.getMac1_2(),
+				disp.getMac2_1(),
+				disp.getMac2_2(),
+				disp.getMac3_1(),
+				disp.getMac3_2(),
+				disp.getMac4_1(),
+				disp.getMac4_2(),
+				disp.getTipo().getId());
 		System.out.println(sql);
 		System.out.println("paso 1");
 		PreparedStatement st = conn.prepareStatement(sql);
@@ -116,9 +122,7 @@ public class DAOTablaDispositivos {
 		System.out.println("paso 3");
 		st.executeQuery();
 		System.out.println("paso 4");
-
 	}
-
 
 	public void trasladarDispositivo(Long anteriorClienteId, Long nuevoClienteId) throws SQLException, Exception{
 		String sql = "UPDATE DISPOSITIVOS SET CLIENTE = " + nuevoClienteId +" WHERE CLIENTE = " + anteriorClienteId;
@@ -132,7 +136,39 @@ public class DAOTablaDispositivos {
 		System.out.println("paso 4");
 
 	}
+	
+	public List<TipoDispositivo> darTiposDispositivoPor(int filtro, String parametro)throws SQLException, Exception{
+		List<TipoDispositivo> ls = new ArrayList<TipoDispositivo>();
+		String sql = "SELECT * FROM TIPOS_DISPOSITIVOS WHERE 1 = 1";
+		
+		
+		switch(filtro) {
 
+		case BUSQUEDA_POR_ID:
+			sql += " AND ID = " + parametro + " AND ROWNUM <= 1";
+			break;
 
+		default:
+			break;
+		}
+		
+		
+		
+		System.out.println(sql);
+		System.out.println("paso 1");
+		PreparedStatement st = conn.prepareStatement(sql);
+		System.out.println("paso 2");
+		recursos.add(st);
+		System.out.println("paso 3");
+		ResultSet rs = st.executeQuery();
+		System.out.println("paso 4");
+		while(rs.next()) {
+			TipoDispositivo tp = new TipoDispositivo(rs.getLong("ID"), rs.getString("NOMBRE"));
+			ls.add(tp);
+		}
+		
+		return ls;
+
+	}
 
 }

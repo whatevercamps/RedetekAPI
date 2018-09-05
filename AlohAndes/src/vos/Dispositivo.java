@@ -8,7 +8,7 @@ public class Dispositivo {
 	private Long id;
 	
 	@JsonProperty("tipo")
-	private String tipo;
+	private TipoDispositivo tipo;
 	
 	@JsonProperty("descripcion")
 	private String descripcion;
@@ -43,7 +43,7 @@ public class Dispositivo {
 	
 	public Dispositivo(
 			@JsonProperty("id") Long id, 
-			@JsonProperty("tipo") String tipo,
+			@JsonProperty("tipo") TipoDispositivo tipo,
 			@JsonProperty("descripcion") String descripcion,
 			@JsonProperty("mac1_1") String mac1_1, 
 			@JsonProperty("mac1_2") String mac1_2, 
@@ -67,11 +67,12 @@ public class Dispositivo {
 		this.mac4_2 = mac4_2;
 	}
 
-	public String getTipo() {
+
+	public TipoDispositivo getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(String tipo) {
+	public void setTipo(TipoDispositivo tipo) {
 		this.tipo = tipo;
 	}
 

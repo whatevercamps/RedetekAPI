@@ -40,6 +40,10 @@ public class Cliente {
 	@JsonProperty("nombreNodo")
 	private String nombreNodo;
 	
+	@JsonProperty("ordenes")
+	private List<Orden> ordenes;
+	
+	
 	public String getNombreNodo() {
 		return nombreNodo;
 	}
@@ -65,7 +69,8 @@ public class Cliente {
 			@JsonProperty("direccion") String direccion, 
 			@JsonProperty("email") String email,
 			@JsonProperty("telefono") Long telefono,
-			@JsonProperty("plan") Plan plan) {
+			@JsonProperty("plan") Plan plan,
+			@JsonProperty("ordenes")List<Orden> ordenes) {
 		super();
 		this.estado = "Inactivo";
 		this.cedula = cedula;
@@ -75,12 +80,25 @@ public class Cliente {
 		this.email = email;
 		this.telefono = telefono;
 		this.plan = plan;
+		this.ordenes = ordenes;
 	}
 
 
 
 	
 	
+	public List<Orden> getOrdenes() {
+		return ordenes;
+	}
+
+	public void setOrdenes(List<Orden> ordenes) {
+		this.ordenes = ordenes;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
 	public String getEstado() {
 		return estado;
 	}
@@ -167,8 +185,6 @@ public class Cliente {
 	public void setOcteto4(Integer octeto4) {
 		this.octeto4 = octeto4;
 	}
-
-
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;

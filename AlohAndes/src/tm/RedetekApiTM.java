@@ -12,6 +12,10 @@ package tm;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -28,12 +32,17 @@ import java.util.Properties;
 
 import dao.DAOTablaClientes;
 import dao.DAOTablaNodos;
+import dao.DAOTablaOrdenes;
 import dao.DAOTablaPlanes;
 import dao.DAOTablaDispositivos;
+import dao.DAOTablaEmpleados;
 import vos.Cliente;
 import vos.Nodo;
+import vos.Orden;
 import vos.Plan;
+import vos.TipoDispositivo;
 import vos.Dispositivo;
+import vos.Empleado;
 
 import java.text.SimpleDateFormat;
 
@@ -153,9 +162,6 @@ public class RedetekApiTM {
 
 
 			//verificar reglas de negocio
-			if (!darNodosPor(DAOTablaNodos.BUSQUEDA_POR_ID, nuevo.getId().toString()).isEmpty()) {
-				throw new Exception("Ya hay un nodo con el id " + nuevo.getId());
-			}
 			String octetos = nuevo.getOcteto1() + ":" + nuevo.getOcteto2() + ":" + nuevo.getOcteto3();
 
 			if (!darNodosPor(DAOTablaNodos.BUSQUEDA_POR_OCTETOS, octetos).isEmpty()) {
@@ -282,74 +288,6 @@ public class RedetekApiTM {
 	}
 
 
-	public Dispositivo crearRouter(Dispositivo router) throws SQLException, Exception{
-		boolean conexionPropia = false; 
-		DAOTablaDispositivos dao = new DAOTablaDispositivos();
-		List<Dispositivo> ret = null;
-		try {
-
-			if(this.conn == null || this.conn.isClosed()){
-				this.conn = darConexion(); 
-				conexionPropia = true; 
-				this.conn.setAutoCommit(false);
-				this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-				this.savepoint = this.conn.setSavepoint();
-			}
-
-
-			//verificar reglas de negocio
-			String macs = router.getMac1_1() + ":";
-			macs += router.getMac1_2() + ":";
-			macs += router.getMac2_1() + ":";
-			macs += router.getMac2_2() + ":";
-			macs += router.getMac3_1() + ":";
-			macs += router.getMac3_2() + ":";
-			macs += router.getMac4_1() + ":";
-			macs += router.getMac4_2();
-
-			if (!darDispositivosPor(DAOTablaDispositivos.BUSQUEDA_POR_MACS, macs).isEmpty()) {
-				throw new Exception("Ya hay un router con dicho mac ");
-			}
-
-			dao.setConn(conn);
-			dao.crearRouter(router);
-
-
-			System.out.println("lo creo");
-			//verificar 
-
-			ret = darDispositivosPor(DAOTablaDispositivos.BUSQUEDA_POR_MACS, macs);
-
-			if(ret.isEmpty()) {
-				throw new Exception("No se guardo correctamente el cliente, revisar xd...");
-			}
-
-			if(conexionPropia)
-				this.conn.commit();
-
-		}  catch (SQLException e) {
-			this.conn.rollback(this.savepoint);
-			System.err.println("SQLException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} catch (Exception e) {
-			this.conn.rollback(this.savepoint);
-			System.err.println("GeneralException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		}finally {
-			try {
-				dao.cerrarRecursos();
-				if(this.conn!=null && conexionPropia)
-					this.conn.close();
-			} catch (SQLException exception) {
-				System.err.println("SQLException closing resources:" + exception.getMessage());
-				exception.printStackTrace();
-				throw exception;
-			}
-		}
-		return ret.get(0);
-	}
 
 
 	public Integer buscarOcteto4Disponible(Long idNodo) throws SQLException, Exception{
@@ -415,6 +353,19 @@ public class RedetekApiTM {
 			for(Cliente c : clientes) {
 				c.setPlan(darPlanesPor(DAOTablaPlanes.BUSQUEDA_POR_ID, c.getPlan().getId().toString()).get(0));
 				c.setDispositivos(darDispositivosPor(DAOTablaDispositivos.BUSQUEDA_POR_CLIENTE, c.getCedula().toString()));
+				c.setOrdenes(darOrdenesPor(DAOTablaOrdenes.BUSQUEDA_POR_CLIENTE, c.getCedula().toString()));
+			}
+
+			if(clientes.size() == 1) {
+				Cliente nuevo = clientes.get(0);
+				List<Orden> nuevas = new ArrayList<Orden>();
+				for(Orden or : nuevo.getOrdenes()) {
+					or.setFotos(darNombreFotos(or.getId()));
+					nuevas.add(or);
+				}
+				nuevo.setOrdenes(nuevas);
+				clientes.clear();
+				clientes.add(nuevo);
 			}
 
 		}catch (SQLException e) {
@@ -455,6 +406,7 @@ public class RedetekApiTM {
 			}
 			dao.setConn(conn);
 			dispositivos = dao.darDispositivosPor(filtro, parametro);
+
 
 
 		}catch (SQLException e) {
@@ -584,22 +536,22 @@ public class RedetekApiTM {
 			if (cli.isEmpty()) {
 				throw new Exception("No hay un cliente con la cedula " + idCliente);
 			}
-			
-			
-			
+
+
+
 			Nodo nd = darNodosPor(DAOTablaNodos.BUSQUEDA_POR_ID, idNodo.toString()).get(0);
 			Cliente cl = cli.get(0);
-			
+
 			if(nd.getOcteto1() != cl.getOcteto1() || nd.getOcteto2() != cl.getOcteto2() || nd.getOcteto3() != cl.getOcteto3()) {
 				Integer octeto4disp = buscarOcteto4Disponible(idNodo);
 
 				if(octeto4disp == null)
 					throw new Exception("El nodo no tiene una ip disponible");
-				
+
 				nuevo.setOcteto4(octeto4disp);
-				
+
 			}
-			
+
 
 			if(!idCliente.toString().equalsIgnoreCase(nuevo.getCedula().toString())) {
 				System.out.println("cedula anterior:" + idCliente.toString());
@@ -608,7 +560,7 @@ public class RedetekApiTM {
 				trasladarDispositivos(idCliente, ret.getCedula());
 				if(conexionPropia)
 					this.savepoint = this.conn.setSavepoint();
-				
+
 				borrarCliente(idCliente);
 			} else {
 				dao.setConn(this.conn);
@@ -616,7 +568,7 @@ public class RedetekApiTM {
 				ret = nuevo;
 			}
 
-		
+
 
 			if(conexionPropia)
 				this.conn.commit();
@@ -731,7 +683,7 @@ public class RedetekApiTM {
 			}
 
 
-	
+
 			dao.setConn(conn);
 			ret = dao.borrarCliente(idCliente);
 
@@ -740,7 +692,7 @@ public class RedetekApiTM {
 			System.out.println("lo creo");
 			//verificar 
 
-			
+
 
 			if(conexionPropia)
 				this.conn.commit();
@@ -769,9 +721,314 @@ public class RedetekApiTM {
 		return ret;
 	}
 
+	public void agregarDispositivoCliente(Long idCliente, Dispositivo disp) throws SQLException, Exception{
+
+		boolean conexionPropia = false; 
+		DAOTablaDispositivos dao = new DAOTablaDispositivos();
+		try {
+
+			if(this.conn == null || this.conn.isClosed()){
+				this.conn = darConexion(); 
+				conexionPropia = true; 
+				this.conn.setAutoCommit(false);
+				this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				this.savepoint = this.conn.setSavepoint();
+			}
+
+
+			//verificar reglas de negocio
+			if(conexionPropia) {
+				System.out.println("idCliente: " + idCliente);
+				if (darClientesPor(DAOTablaClientes.BUSQUEDA_POR_CEDULA, idCliente.toString()).isEmpty()){
+					throw new Exception("No hay un cliente con la cedula " + idCliente);
+				}
+			}
+
+			String mac = disp.getMac1_1()+":"+disp.getMac1_2()+":"+
+					disp.getMac2_1()+":"+disp.getMac2_2()+":"+
+					disp.getMac3_1()+":"+disp.getMac3_2()+":"+
+					disp.getMac4_1()+":"+disp.getMac4_2();
+
+			if(!darDispositivosPor(DAOTablaDispositivos.BUSQUEDA_POR_MACS, mac).isEmpty()) {
+				throw new Exception("Ya existe un dispositivo con dicha Mac");
+			}
+
+
+			dao.setConn(conn);
+			dao.crearDispositivo(disp);
+			if(darDispositivosPor(DAOTablaDispositivos.BUSQUEDA_POR_MACS, mac).isEmpty()) {
+				throw new Exception("El dispositivo no fue creado");
+			}
+
+			dao.trasladarDispositivo(0L, idCliente);
+			if(conexionPropia)
+				this.conn.commit();
+			System.out.println("lo creo");
+			//verificar 
+
+			if(conexionPropia)
+				this.conn.commit();
+
+		}  catch (SQLException e) {
+			this.conn.rollback(this.savepoint);
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			this.conn.rollback(this.savepoint);
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null && conexionPropia)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+
+	}
+
+	public List<TipoDispositivo> darTiposDispositivoPor(int filtro, String parametro) throws SQLException, Exception{
+		boolean conexionPropia = false; 
+		List<TipoDispositivo> tipos = new ArrayList<TipoDispositivo>(); 
+		DAOTablaDispositivos dao = new DAOTablaDispositivos();
+
+		try {
+			if (this.conn == null || this.conn.isClosed()) {
+				this.conn = darConexion(); 
+				conexionPropia = true; 
+				this.conn.setAutoCommit(false);
+				this.savepoint = this.conn.setSavepoint();
+			}
+			dao.setConn(conn);
+			tipos = dao.darTiposDispositivoPor(filtro, parametro);
+
+
+		}catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+
+				dao.cerrarRecursos();
+				if(this.conn!=null && conexionPropia)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return tipos; 
+	}
+
+	public List<Orden> darOrdenesPor(Integer filtro, String parametro) throws SQLException, Exception{
+		boolean conexionPropia = false; 
+		List<Orden> ordenes = new ArrayList<Orden>(); 
+		DAOTablaOrdenes dao = new DAOTablaOrdenes();
+
+		try {
+			if (this.conn == null || this.conn.isClosed()) {
+				this.conn = darConexion(); 
+				conexionPropia = true; 
+				this.conn.setAutoCommit(false);
+				this.savepoint = this.conn.setSavepoint();
+			}
+			dao.setConn(conn);
+
+			ordenes = dao.darOrdenesPor(filtro, parametro);
+
+			for (Orden or : ordenes) {
+				or.setTecnicos(darTecnicosDeOrden(or.getId()));
+			}
+
+		}catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+
+				dao.cerrarRecursos();
+				if(this.conn!=null && conexionPropia)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return ordenes; 
+	}
+
+
+	public List<String> darNombreFotos(Long idOrden)throws SQLException, Exception{
+
+
+		List<String> nombres = new ArrayList<String>();
+		ClienteFTP cliente = new ClienteFTP("ftp.techcis.com.co", 21, "usuario1@techcis.com.co", "clave1");
+
+		try {
+			if(cliente.conectar()) {
+				System.out.println("se logró conectar");
+				nombres = cliente.darNombreArchivosDirectorio("/"+idOrden, idOrden);
+			}else {
+				System.out.println("paila al conectarse");
+				throw new Exception("la conexión no se logró");
+			}
+
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			cliente.desconectar();
+			System.out.println("desconexftp: " + cliente.estaConectado());
+		}
+		return nombres;
+	}
 
 
 
+	public List<String> descargarFotosOrden(Long idOrden)throws SQLException, Exception{
+
+		System.out.println("ENTRANDO AL TM........");
+		List<String> nombres = new ArrayList<String>(); 
+		ClienteFTP cliente = new ClienteFTP("ftp.techcis.com.co", 21, "usuario1@techcis.com.co", "clave1");
+
+		try {
+			if(cliente.conectar()) {
+				System.out.println("se logró conectar");
+				nombres = cliente.bajarArchivosDirectorio("/"+idOrden, "/Users/whatevercamps/wildfly-10.0.0.Final/standalone/deployments/RedetekAPIRest.war/resources/img/ordenes", idOrden);
+				for(String no : nombres) {
+					System.out.println(no);
+				}
+			}else {
+				System.out.println("paila al conectarse");
+				throw new Exception("la conexión no se logró");
+			}
+
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			cliente.desconectar();
+			System.out.println("desconexftp: " + cliente.estaConectado());
+		}
+		return nombres;
+	}
+	
+	public String descargarFotoOrden(Long idOrden, String nombre)throws SQLException, Exception{
+
+		System.out.println(nombre);
+		nombre += ".jpg";
+		System.out.println(nombre);
+		ClienteFTP cliente = new ClienteFTP("ftp.techcis.com.co", 21, "usuario1@techcis.com.co", "clave1");
+
+		try {
+			if(cliente.conectar()) {
+				System.out.println("se logró conectar");
+				String src = "/"+idOrden+"/"+nombre;
+				String des = "/Users/whatevercamps/wildfly-10.0.0.Final/standalone/deployments/RedetekAPIRest.war/resources/img/ordenes"+"/"+idOrden+"_"+nombre;
+				if(!cliente.bajarArchivo(src, des)) {
+					throw new Exception("Falló la descarga del archivo con la ruta de origen " + src + " y la ruta de destino " + des);
+				}
+			}else {
+				System.out.println("paila al conectarse");
+				throw new Exception("la conexión no se logró");
+			}
+
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			cliente.desconectar();
+			System.out.println("desconexftp: " + cliente.estaConectado());
+		}
+		return nombre;
+	}
 
 
+	private List<Empleado> darTecnicosDeOrden(Long id) throws SQLException, Exception{
+		boolean conexionPropia = false; 
+		List<Empleado> empleados = new ArrayList<Empleado>(); 
+		DAOTablaEmpleados dao = new DAOTablaEmpleados();
+
+		try {
+			if (this.conn == null || this.conn.isClosed()) {
+				this.conn = darConexion(); 
+				conexionPropia = true; 
+				this.conn.setAutoCommit(false);
+				this.savepoint = this.conn.setSavepoint();
+			}
+			dao.setConn(conn);
+
+			empleados = dao.darEmpleadosPor(DAOTablaEmpleados.TEC_DE_ORDEN, id.toString());
+
+		}catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+
+				dao.cerrarRecursos();
+				if(this.conn!=null && conexionPropia)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return empleados; 
+	}
+	
+	
+	private static void copyFileUsingStream(File source, File dest) throws IOException {
+	    InputStream is = null;
+	    OutputStream os = null;
+	    try {
+	        is = new FileInputStream(source);
+	        os = new FileOutputStream(dest);
+	        byte[] buffer = new byte[1024];
+	        int length;
+	        while ((length = is.read(buffer)) > 0) {
+	            os.write(buffer, 0, length);
+	        }
+	    } finally {
+	        is.close();
+	        os.close();
+	    }
+	}
+	
+	
+	
 }
+
+
+
+
+
+
+

@@ -24,6 +24,7 @@ import dao.DAOTablaClientes;
 import tm.RedetekApiTM;
 import vos.Cliente;
 import vos.Dispositivo;
+import vos.Plan;
 
 
 
@@ -70,13 +71,13 @@ public class ClienteResorce {
 			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );
 		}
 	}
+	
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON } )
 	public Response darClientes() throws SQLException, Exception{
 		RedetekApiTM tm = new RedetekApiTM(getPath());
-		try {
-
+		try {	
 			return Response.status( 200 ).entity( tm.darClientesPor(0, "hola") ).build();	
 		}catch( Exception e )
 		{
@@ -117,6 +118,23 @@ public class ClienteResorce {
 		}
 	}
 
+	@POST
+	@Path("{id: \\d+}/agregarDispositivo")
+	@Consumes({ MediaType.APPLICATION_JSON } )
+	public Response agregarDispositivoCliente(@PathParam("id") Long idCliente, Dispositivo disp)throws SQLException, Exception{
+		System.out.println("entreeeeee");
+
+		RedetekApiTM tm = new RedetekApiTM(getPath());
+		try {
+			tm.agregarDispositivoCliente(idCliente, disp);
+			System.out.println("si, si lo creo");
+			return Response.status( 200 ).entity( "ok" ).build();	
+		}catch( Exception e )
+		{
+			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );
+		}
+	}
+	
 	@DELETE
 	@Path("{id: \\d+}")
 	@Produces({ MediaType.APPLICATION_JSON } )

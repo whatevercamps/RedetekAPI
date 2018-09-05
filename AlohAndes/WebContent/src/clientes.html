@@ -19,8 +19,8 @@
 	<tbody>
 		<tr ng-repeat="cliente in clientes">
 			<td class="{{cliente.estado}}" id="{{$index}}-estado"><p style="padding: 10px 0;">{{cliente.estado}}</p></td>
-			<td id="{{$index}}-id"><p style="padding: 10px 0;">{{cliente.cedula}}</p></td>
-			<td id="{{$index}}-nombre"><p style="padding: 10px 0;"> {{cliente.nombre}} </p></td>
+			<td id="{{$index}}-id"><a ui-sref="clienteDetail({clienteId: cliente.cedula})"><p style="padding: 10px 0;">{{cliente.cedula}}</p></a></td>
+			<td id="{{$index}}-nombre"><a ui-sref="clienteDetail({clienteId: cliente.cedula})"><p style="padding: 10px 0;">{{cliente.nombre}}</p></a></td>
 			<td id="{{$index}}-direccion"><p style="padding: 10px 0;"> {{cliente.direccion}} </p></td>
 			<td id="{{$index}}-email"><p style="padding: 10px 0;"> {{cliente.email}} </p></td>
 			<td id="{{$index}}-plan"><p style="padding: 10px 0;"> {{cliente.plan.nombre}} </p></td>

@@ -13,8 +13,8 @@
     <!-- JS (load angular, ui-router, and our custom js file) -->
     <script src="https://code.angularjs.org/1.2.13/angular.js"></script>
     <script src="//unpkg.com/@uirouter/angularjs/release/angular-ui-router.min.js"></script>
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.4/ui-bootstrap.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.4/ui-bootstrap-tpls.js"></script>   
     <script src="src/app.js" type="text/javascript"></script> 
 
   </head>
@@ -29,7 +29,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               NODOS
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -40,7 +40,7 @@
             </div>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               CLIENTES
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -56,26 +56,27 @@
       </div>
     </nav>
     
-<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">ERROR</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p style="color: red" id="errorText"></p> 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">ERROR</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p style="color: red" id="errorText"></p> 
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-    <div ui-view="listaView"> </div>
+
+    <div ui-view="mainView"> </div>
 
 
     <!-- Modal -->
@@ -89,7 +90,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <div ui-view="mainView"> </div>
+            <div ui-view="ViewCrearNodo"> </div>
           </div>
         </div>
       </div>
@@ -106,28 +107,45 @@
             </button>
           </div>
           <div class="modal-body">
-            <div ui-view="mainView"> </div>
+            <div ui-view="ViewCrearCliente"> </div>
           </div>
         </div>
       </div>
     </div>
 
 
-        <div class="modal fade" id="modificarClienteModal" tabindex="-1" role="dialog" aria-labelledby="crearClienteModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modificarClienteModal" tabindex="-1" role="dialog" aria-labelledby="modificarClienteModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="crearClienteModalLabel"> Modificar Cliente </h5>
+            <h5 class="modal-title" id="modificarClienteModalLabel"> Modificar Cliente </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <div ui-view="mainView"> </div>
+            <div ui-view="ViewModificarCliente"> </div>
           </div>
         </div>
       </div>
     </div>
+
+    <div class="modal fade" id="agregarDispositivoModal" tabindex="-1" role="dialog" aria-labelledby="agregarDispositivoModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="agregarDispositivoModalLabel"> Agregar dispositivo </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div ui-view="ViewAgregarDispositivo"> </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
     <div class="modal fade" id="borrarClienteModal" tabindex="-1" role="dialog" aria-labelledby="borrarClienteModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -139,12 +157,27 @@
             </button>
           </div>
           <div class="modal-body">
-            <div ui-view="mainView"> </div>
+            <div ui-view="ViewBorrarCliente"> </div>
           </div>
         </div>
       </div>
     </div>
 
+    <div class="modal fade" id="fotosOrdenModal" tabindex="-1" role="dialog" aria-labelledby="fotosOrdenModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="crearClienteModalLabel"> Ver Fotos </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div ui-view="ViewVerFotos"> </div>
+          </div>
+        </div>
+      </div>
+    </div>
     
 
   </body>
