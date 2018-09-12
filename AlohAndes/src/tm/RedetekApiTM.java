@@ -43,6 +43,7 @@ import vos.Plan;
 import vos.TipoDispositivo;
 import vos.Dispositivo;
 import vos.Empleado;
+import vos.FechaDisponible;
 
 import java.text.SimpleDateFormat;
 
@@ -350,20 +351,17 @@ public class RedetekApiTM {
 			dao.setConn(conn);
 			clientes = dao.darClientesPor(filtro, parametro);
 
-			for(Cliente c : clientes) {
-				c.setPlan(darPlanesPor(DAOTablaPlanes.BUSQUEDA_POR_ID, c.getPlan().getId().toString()).get(0));
-				c.setDispositivos(darDispositivosPor(DAOTablaDispositivos.BUSQUEDA_POR_CLIENTE, c.getCedula().toString()));
-				c.setOrdenes(darOrdenesPor(DAOTablaOrdenes.BUSQUEDA_POR_CLIENTE, c.getCedula().toString()));
-			}
-
 			if(clientes.size() == 1) {
 				Cliente nuevo = clientes.get(0);
+				nuevo.setOrdenes(darOrdenesPor(DAOTablaOrdenes.BUSQUEDA_POR_CLIENTE, nuevo.getCedula().toString()));
 				List<Orden> nuevas = new ArrayList<Orden>();
 				for(Orden or : nuevo.getOrdenes()) {
 					or.setFotos(darNombreFotos(or.getId()));
 					nuevas.add(or);
 				}
 				nuevo.setOrdenes(nuevas);
+				nuevo.setPlan(darPlanesPor(DAOTablaPlanes.BUSQUEDA_POR_ID, nuevo.getPlan().getId().toString()).get(0));
+				nuevo.setDispositivos(darDispositivosPor(DAOTablaDispositivos.BUSQUEDA_POR_CLIENTE, nuevo.getCedula().toString()));
 				clientes.clear();
 				clientes.add(nuevo);
 			}
@@ -488,8 +486,10 @@ public class RedetekApiTM {
 			dao.setConn(conn);
 			nodos = dao.darNodosPor(filtro, parametro);
 
-			for(Nodo n : nodos) {
+			if(nodos.size() == 1) {
+				Nodo n = nodos.remove(0);
 				n.setClientes(darClientesPor(DAOTablaClientes.BUSQUEDA_POR_ID_NODO, n.getId().toString()));
+				nodos.add(n);
 			}
 
 		}catch (SQLException e) {
@@ -963,6 +963,47 @@ public class RedetekApiTM {
 		}
 		return nombre;
 	}
+	
+	public List<Empleado> darTecnicosDisponibles(String sDia) throws SQLException, Exception{
+		boolean conexionPropia = false; 	
+		
+		
+		List<Empleado> empleados = new ArrayList<Empleado>(); 
+		DAOTablaEmpleados dao = new DAOTablaEmpleados();
+
+		try {
+			if (this.conn == null || this.conn.isClosed()) {
+				this.conn = darConexion(); 
+				conexionPropia = true; 
+				this.conn.setAutoCommit(false);
+				this.savepoint = this.conn.setSavepoint();
+			}
+			dao.setConn(conn);
+
+			empleados = dao.darEmpleadosPor(DAOTablaEmpleados.DISPONIBLE_EN_TAL_DIA, sDia);
+
+		}catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+
+				dao.cerrarRecursos();
+				if(this.conn!=null && conexionPropia)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return empleados; 
+	}
 
 
 	private List<Empleado> darTecnicosDeOrden(Long id) throws SQLException, Exception{
@@ -1005,6 +1046,7 @@ public class RedetekApiTM {
 	}
 	
 	
+	
 	private static void copyFileUsingStream(File source, File dest) throws IOException {
 	    InputStream is = null;
 	    OutputStream os = null;
@@ -1020,6 +1062,92 @@ public class RedetekApiTM {
 	        is.close();
 	        os.close();
 	    }
+	}
+
+	public Boolean crearOrden(Orden orden, Long idCliente) throws SQLException, Exception{
+		boolean conexionPropia = false; 
+		DAOTablaOrdenes dao = new DAOTablaOrdenes();
+		Boolean ret = null;
+		try {
+
+			if(this.conn == null || this.conn.isClosed()){
+				this.conn = darConexion(); 
+				conexionPropia = true; 
+				this.conn.setAutoCommit(false);
+				this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				this.savepoint = this.conn.setSavepoint();
+			}
+			
+			//verificar reglas de negocio
+			if (!darOrdenesPor(DAOTablaOrdenes.BUSQUEDA_POR_ID, orden.getId().toString()).isEmpty()) {
+				throw new Exception("Ya hay una con orden con el id  " + orden.getId());
+			}
+
+			if (!darOrdenesPor(DAOTablaOrdenes.BUSQUEDA_POR_CLIENTE_ACTIVAS, idCliente.toString()).isEmpty()) {
+				throw new Exception("El cliente con la cédula " + idCliente +  " ya tiene una orden pendiente.");
+			}
+
+			
+			dao.setConn(conn);
+			dao.crearOrden(orden, idCliente);
+
+			
+			System.out.println("lo creo");
+			//verificar 
+
+			List<Orden> ord= darOrdenesPor(DAOTablaOrdenes.BUSQUEDA_POR_ID, orden.getId().toString());
+			
+			
+			
+			if(ord.isEmpty()) {
+				throw new Exception("No se guardó correctamente la orden, intente de nuevo...");
+			}else {
+				for(Empleado em : ord.get(0).getTecnicos()) {
+					dao.asignarTecnico(ord.get(0).getId(), em.getId(), 1L);
+				}
+			}
+			
+			ClienteFTP cliente = new ClienteFTP("ftp.techcis.com.co", 21, "usuario1@techcis.com.co", "clave1");
+			
+			if(cliente.conectar()) {
+				if(cliente.crearDirectorio("/" + ord.get(0).getId() )) {
+
+					if(conexionPropia)
+						this.conn.commit();
+					
+				}else {
+					throw new Exception("No se logró crear el directorio");
+				}
+			}else {
+				throw new Exception("No se logró conectar al servidor ftp");
+			}
+			
+
+
+			ret = true;
+
+		}  catch (SQLException e) {
+			this.conn.rollback(this.savepoint);
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			this.conn.rollback(this.savepoint);
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null && conexionPropia)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return ret;
 	}
 	
 	

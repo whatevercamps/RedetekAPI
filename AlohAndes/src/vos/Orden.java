@@ -17,6 +17,9 @@ public class Orden {
 	@JsonProperty("tipo")
 	private Integer tipo;
 	
+	@JsonProperty("estado")
+	private Integer estado;
+	
 	@JsonProperty("plan")
 	private Plan plan;
 	
@@ -37,14 +40,24 @@ public class Orden {
 			@JsonProperty("nombre") String nombre, 
 			@JsonProperty("tecnicos") List<Empleado> tecnicos,
 			@JsonProperty("plan") Plan plan,
-			@JsonProperty("fotos") List<String> fotos) {
+			@JsonProperty("fotos") List<String> fotos,
+			@JsonProperty("estado")Integer estado) {
 		super();
 		this.id = id;
 		this.fecha = fecha;
 		this.tipo = tipo;
+		this.estado = estado;
 		this.plan = plan;
 		this.tecnicos = tecnicos;
 		this.fotos = fotos;
+	}
+
+	public Integer getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Integer estado) {
+		this.estado = estado;
 	}
 
 	public List<String> getFotos() {

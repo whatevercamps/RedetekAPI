@@ -111,6 +111,26 @@
             }
         });
 
+        $stateProvider.state('agregarOrdenCliente', {
+            url: '/orden/crearOrden?idCliente={clienteId : int}',
+            params: {
+                clienteId: null, 
+                clienteRef: null
+            },
+            views: {
+                'ViewAgregarOrden':{
+                    templateUrl: 'src/agregarOrden.html',
+                    controller: 'agregarOrdenCtrl'               
+                },
+                'mainView': {
+                    templateUrl: 'src/detalleCliente.html',
+                    controller: 'detalleClienteCtrl'
+                }
+            }
+        });
+
+
+
         $stateProvider.state('verFotosOrden', {
             url: '/orden/{idOrden:int}/fotos',
             params: {
@@ -319,9 +339,66 @@ app.controller('crearClienteCtrl', ['$scope', '$state', '$stateParams', '$http',
 
 }]);
 
+
+
+app.controller('agregarOrdenCtrl', ['$scope', '$state', '$stateParams', '$http', function ($scope, $state, $stateParams, $http) {
+
+
+    $scope.example1model = []; 
+    $scope.example1data = [ {id: 1, label: "David"}, {id: 2, label: "Jhon"}, {id: 3, label: "Danny"} ];
+
+    $scope.tipos = [{
+        "id": 1,
+        "nombre": "Instalación"
+    }, {
+        "id": 2,
+        "nombre": "Revisión"
+    }, {
+        "id": 3,
+        "nombre": "Reparación"
+    }, {
+        "id": 4,
+        "nombre": "Traslado"
+    }, {
+        "id": 5,
+        "nombre": "Retiro"
+    }];
+
+    
+
+    var ruta = "http://localhost:8080/RedetekAPIRest/rest/planes";
+    $http.get(ruta).then(function (response) {
+        $scope.planes = response.data;
+    });
+
+
+
+    $scope.data = {};
+
+    var config = {
+        headers : {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    $scope.crearOrden = function () {
+        console.log($state.params.clienteId);
+        $http.post('http://localhost:8080/RedetekAPIRest/rest/ordenes/crearOrden?idCliente=' + $state.params.clienteId, $scope.data, config).then(function (response) {
+            $state.go('clienteDetail', {clienteId: $state.params.clienteId}, {reload: true});
+        },
+        function(response){
+            console.log(response.data);
+            $state.go('clienteDetail', {clienteId: $state.params.clienteId}, {reload: true});
+            document.getElementById("errorText").innerHTML = response.data.ERROR;
+            $('#errorModal').modal("show");
+        }
+        );
+    };
+
+}]);
+
+
 app.controller('detalleClienteCtrl', ['$scope', '$state', '$stateParams', '$http', function ($scope, $state, $stateParams, $http) {
-
-
     if(($state.params.clienteId !== undefined) && ($state.params.clienteId !== null)){
         console.log("entro al detalle del Cliente");
         var ruta = "http://localhost:8080/RedetekAPIRest/rest/clientes/" + $state.params.clienteId;
@@ -338,15 +415,9 @@ app.controller('detalleClienteCtrl', ['$scope', '$state', '$stateParams', '$http
     }else if(($state.params.clienteRef !== undefined) && ($state.params.clienteRef !== null)){
         $scope.cliente = $state.params.clienteRef;
     }
-
-
-
-
 }]);
 
 app.controller('verFotosOrdenCtrl', ['$scope', '$state', '$stateParams', '$http', function ($scope, $state, $stateParams, $http) {
-
-
     if(($state.params.idOrden !== undefined) && ($state.params.idOrden !== null)){
         console.log("entro pues al ver fotos");
         if($scope.fotos == null || $scope.fotos == undefined){
@@ -429,10 +500,8 @@ app.controller('modificarClienteCtrl', ['$scope', '$state', '$stateParams', '$ht
     }
 }]);
 
-
 app.controller('borrarClienteCtrl', ['$scope', '$state', '$stateParams', '$http', function ($scope, $state, $stateParams, $http) {
     var ruta = "http://localhost:8080/RedetekAPIRest/rest/nodos";
-
 
     if ($state.params.idCliente !== undefined) {
         if( $state.params.idCliente !== null ){
@@ -459,7 +528,6 @@ app.controller('borrarClienteCtrl', ['$scope', '$state', '$stateParams', '$http'
         console.log('paila paila');
     }
 }]); 
-
 
 angular.module('ui.bootstrap.carousel', ['ui.bootstrap.transition'])
 .controller('CarouselController', ['$scope', '$timeout', '$transition', '$q', function        ($scope, $timeout, $transition, $q) {

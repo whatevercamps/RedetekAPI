@@ -48,6 +48,12 @@
     </ul>
     <div class="tab-content">
       <div class="tab-pane active" id="dispositivos">
+        <br>
+        <button type="button" class="btn btn-primary" ui-sref="agregarDispositivoCliente({clienteId: cliente.cedula})" data-toggle="modal" data-target="#agregarDispositivoModal">
+          Agregar Dispositivo
+        </button>
+        <br>
+        <hr>
         <table class="table table-striped">
           <thead>
             <tr>
@@ -76,15 +82,15 @@
         </tr>
       </tbody>
     </table>
-    <button type="button" class="btn btn-primary" ui-sref="agregarDispositivoCliente({clienteId: cliente.cedula})" data-toggle="modal" data-target="#agregarDispositivoModal">
-      Agregar Dispositivo
-    </button>
   </div>
   <!--fin dispositivos div-->
   <div class="tab-pane" id="ordenes">
+    <br>
     <button type="button" class="btn btn-primary" ui-sref="agregarOrdenCliente({clienteId: cliente.cedula})" data-toggle="modal" data-target="#agregarOrdenModal">
-      Agregar Dispositivo
+      Agregar Orden
     </button>
+    <br>
+    <hr>
     <div class="card" ng-repeat="orden in cliente.ordenes">
       <div class="card-header">Orden No. <strong>{{orden.id}}</strong></div>
       <div class="card-body">

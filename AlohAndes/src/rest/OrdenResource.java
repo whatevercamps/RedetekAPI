@@ -1,6 +1,7 @@
 package rest;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,8 @@ import dao.DAOTablaClientes;
 import tm.RedetekApiTM;
 import vos.Cliente;
 import vos.Nodo;
+import vos.Orden;
+import vos.Plan;
 import vos.Dispositivo;
 
 
@@ -104,5 +107,22 @@ public class OrdenResource {
 			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );
 		}
 	}
+	
+	
+	@POST
+	@Path("crearOrden")
+	@Consumes({ MediaType.APPLICATION_JSON } )
+	@Produces({ MediaType.APPLICATION_JSON } )
+	public Response crearOrden(Orden Orden, @QueryParam("idCliente") Long idCliente) throws SQLException, Exception{
+		RedetekApiTM tm = new RedetekApiTM(getPath());
+		try {
+			return Response.status( 200 ).entity(tm.crearOrden(Orden, idCliente)).build();
+		}catch( Exception e )
+		{
+			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );
+		}
+	}	
+	
+	
 	
 }

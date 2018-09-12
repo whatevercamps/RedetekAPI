@@ -18,6 +18,7 @@ public class DAOTablaEmpleados {
 
 	public static final int BUSQUEDA_POR_ID = 1;
 	public static final int TEC_DE_ORDEN = 2;
+	public static final int DISPONIBLE_EN_TAL_DIA = 3;
 	private ArrayList<Object> recursos;
 
 	private Connection conn;
@@ -46,7 +47,7 @@ public class DAOTablaEmpleados {
 
 	public List<Empleado> darEmpleadosPor(int filtro, String parametro) throws SQLException, Exception {
 		List<Empleado> empleados = new ArrayList<Empleado>();
-		String sql = "SELECT EMP.*, ID_USER_FTP, USUARIO, CLAVE FROM EMPLEADOS EMP, TEC_ORD, USUARIOS_FTP UFTP WHERE EMP.ID = ID_TECNICO AND ID_USER_FTP = UFTP.ID" ;
+		String sql = "SELECT EMP.*, ID_USER_FTP, USUARIO, CLAVE FROM EMPLEADOS EMP LEFT OUTER JOIN (TEC_ORD JOIN USUARIOS_FTP UFTP ON ID_USER_FTP = UFTP.ID) ON EMP.ID = ID_TECNICO WHERE 1 = 1" ;
 
 		switch(filtro) {
 
@@ -56,6 +57,13 @@ public class DAOTablaEmpleados {
 
 		case TEC_DE_ORDEN:
 			sql += " AND ID_ORDEN = " + parametro; 
+			break;
+			
+		case DISPONIBLE_EN_TAL_DIA:
+			sql += " AND EMP.ID NOT IN "
+					+ "(SELECT EMP.ID FROM EMPLEADOS EMP, ORDENES ORD, TEC_ORD, USUARIOS_FTP UF "
+					+ "WHERE ORD.ID = ID_ORDEN AND ID_TECNICO = EMP.ID AND ID_USER_FTP = UF.ID "
+					+ "AND FECHA = TO_DATE('"+parametro+"', 'yyyy-mm-dd'))";
 			break;
 		
 		default:
