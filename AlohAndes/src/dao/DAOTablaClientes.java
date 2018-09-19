@@ -75,6 +75,8 @@ public class DAOTablaClientes {
 			act.setDireccion(rs.getString("DIRECCION"));
 			act.setEmail(rs.getString("EMAIL"));
 			act.setNombre(rs.getString("NOMBRE"));
+			act.setId(rs.getInt("ID_CLIENTE"));
+			act.setMaster(rs.getInt("MASTER"));
 			act.setOcteto4(rs.getInt("OCTETO4"));
 			act.setTelefono(rs.getLong("TELEFONO"));
 			act.setOcteto1(rs.getInt("OCTETO1"));
@@ -91,8 +93,8 @@ public class DAOTablaClientes {
 	}
 
 	public void crearCliente(Cliente cliente, Long idNodo) throws SQLException, Exception {
-		String sql = String.format("INSERT INTO CLIENTES(CEDULA, NOMBRE, DIRECCION, EMAIL, OCTETO4, TELEFONO, IDNODO, IDPLAN) VALUES "
-				+ "(%1$s, '%2$s', '%3$s', '%4$s', %5$s,%6$s, %7$s, %8$s)",
+		String sql = String.format("INSERT INTO CLIENTES(CEDULA, NOMBRE, DIRECCION, EMAIL, OCTETO4, TELEFONO, IDNODO, IDPLAN, MASTER, ID_CLIENTE) VALUES "
+				+ "(%1$s, '%2$s', '%3$s', '%4$s', %5$s,%6$s, %7$s, %8$s, %9$s, %10$s)",
 				cliente.getCedula(),
 				cliente.getNombre(),
 				cliente.getDireccion(),
@@ -100,7 +102,9 @@ public class DAOTablaClientes {
 				cliente.getOcteto4(),
 				cliente.getTelefono(),
 				idNodo,
-				cliente.getPlan().getId());
+				cliente.getPlan().getId(),
+				cliente.getId(),
+				cliente.getMaster());
 		System.out.println(sql);
 		System.out.println("paso 1");
 		PreparedStatement st = conn.prepareStatement(sql);
@@ -127,7 +131,7 @@ public class DAOTablaClientes {
 
 
 	public void modificarCliente(Long idCliente, Cliente nuevo, Long idNodo)throws SQLException, Exception {
-		String sql = String.format("UPDATE CLIENTES SET NOMBRE = '%1$s', DIRECCION = '%2$s', EMAIL = '%3$s', OCTETO4 = %4$s, TELEFONO = %5$s, IDNODO = %6$s, IDPLAN = %7$s, ESTADO = %8$s WHERE CEDULA = %9$s",
+		String sql = String.format("UPDATE CLIENTES SET NOMBRE = '%1$s', DIRECCION = '%2$s', EMAIL = '%3$s', OCTETO4 = %4$s, TELEFONO = %5$s, IDNODO = %6$s, IDPLAN = %7$s, ESTADO = %8$s, ID_CLIENTE = %10$s, MASTER = %11$s WHERE CEDULA = %9$s",
 							nuevo.getNombre(), 
 							nuevo.getDireccion(),
 							nuevo.getEmail(),
@@ -136,7 +140,9 @@ public class DAOTablaClientes {
 							idNodo,
 							nuevo.getPlan().getId(),
 							(nuevo.getEstado().equalsIgnoreCase("Activo") ? 1 : 0),
-							idCliente);
+							idCliente,
+							nuevo.getId(),
+							nuevo.getMaster());
 							
 							
 		System.out.println(sql);

@@ -19,6 +19,12 @@ public class Cliente {
 	@JsonProperty("nombre")
 	private String nombre;
 	
+	@JsonProperty("master")
+	private Integer master;
+	
+	@JsonProperty("id")
+	private Integer id;
+	
 	@JsonProperty("octeto1")
 	private Integer octeto1;
 	
@@ -66,6 +72,8 @@ public class Cliente {
 			@JsonProperty("cedula") Long cedula, 
 			@JsonProperty("octeto4") Integer octeto4, 
 			@JsonProperty("nombre") String nombre, 
+			@JsonProperty("master") Integer master,
+			@JsonProperty("id") Integer id,
 			@JsonProperty("direccion") String direccion, 
 			@JsonProperty("email") String email,
 			@JsonProperty("telefono") Long telefono,
@@ -76,6 +84,8 @@ public class Cliente {
 		this.cedula = cedula;
 		this.octeto4 = octeto4;
 		this.nombre = nombre;
+		this.master = master;
+		this.id = id;
 		this.direccion = direccion;
 		this.email = email;
 		this.telefono = telefono;
@@ -87,6 +97,22 @@ public class Cliente {
 
 	
 	
+	public Integer getMaster() {
+		return master;
+	}
+
+	public void setMaster(Integer master) {
+		this.master = master;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	public List<Orden> getOrdenes() {
 		return ordenes;
 	}

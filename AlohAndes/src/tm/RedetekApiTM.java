@@ -747,10 +747,24 @@ public class RedetekApiTM {
 			String mac = disp.getMac1_1()+":"+disp.getMac1_2()+":"+
 					disp.getMac2_1()+":"+disp.getMac2_2()+":"+
 					disp.getMac3_1()+":"+disp.getMac3_2()+":"+
-					disp.getMac4_1()+":"+disp.getMac4_2();
+					disp.getMac4_1()+":"+disp.getMac4_2()+
+					disp.getMac5_1()+":"+disp.getMac5_2()+
+					disp.getMac6_1()+":"+disp.getMac6_2();
 
 			if(!darDispositivosPor(DAOTablaDispositivos.BUSQUEDA_POR_MACS, mac).isEmpty()) {
-				throw new Exception("Ya existe un dispositivo con dicha Mac");
+				throw new Exception("Ya existe un dispositivo con dicha WifiMac");
+			}
+			
+			
+			mac = disp.getEocMac1_1()+":"+disp.getEocMac1_2()+":"+
+					disp.getEocMac2_1()+":"+disp.getEocMac2_2()+":"+
+					disp.getEocMac3_1()+":"+disp.getEocMac3_2()+":"+
+					disp.getEocMac4_1()+":"+disp.getEocMac4_2()+
+					disp.getEocMac5_1()+":"+disp.getEocMac5_2()+
+					disp.getEocMac6_1()+":"+disp.getEocMac6_2();
+
+			if(!darDispositivosPor(DAOTablaDispositivos.BUSQUEDA_POR_EOC_MACS, mac).isEmpty()) {
+				throw new Exception("Ya existe un dispositivo con dicha EocMac");
 			}
 
 
@@ -1149,6 +1163,70 @@ public class RedetekApiTM {
 		}
 		return ret;
 	}
+
+	public Plan crearPlan(Plan nuevo) throws SQLException, Exception{
+		boolean conexionPropia = false; 
+		DAOTablaPlanes dao = new DAOTablaPlanes();
+		List<Plan> ret = null;
+		try {
+
+			if(this.conn == null || this.conn.isClosed()){
+				this.conn = darConexion(); 
+				conexionPropia = true; 
+				this.conn.setAutoCommit(false);
+				this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				this.savepoint = this.conn.setSavepoint();
+			}
+
+
+			//verificar reglas de negocio
+			
+
+			if (!darPlanesPor(DAOTablaPlanes.BUSQUEDA_POR_ID, nuevo.getId().toString()).isEmpty()) {
+				throw new Exception("Ya hay un plan con el id " + nuevo.getId());
+			}
+
+
+			dao.setConn(conn);
+			dao.crearPlan(nuevo);
+
+			this.savepoint = this.conn.setSavepoint();
+			System.out.println("lo creo");
+			//verificar 
+
+			ret = darPlanesPor(DAOTablaPlanes.BUSQUEDA_POR_ID, nuevo.getId().toString());
+
+			if(ret.isEmpty()) {
+				throw new Exception("No se guardo correctamente el plan, revisar xd...");
+			}
+
+			if(conexionPropia)
+				this.conn.commit();
+
+		}  catch (SQLException e) {
+			this.conn.rollback(this.savepoint);
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			this.conn.rollback(this.savepoint);
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}finally {
+			try {
+				dao.cerrarRecursos();
+				if(this.conn!=null && conexionPropia)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return ret.get(0);
+	}
+
 	
 	
 	

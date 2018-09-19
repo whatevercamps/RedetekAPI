@@ -23,6 +23,7 @@ import dao.DAOTablaClientes;
 import tm.RedetekApiTM;
 import vos.Cliente;
 import vos.Nodo;
+import vos.Plan;
 import vos.Dispositivo;
 
 
@@ -58,13 +59,13 @@ public class PlanResource {
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON } )
 	@Produces({ MediaType.APPLICATION_JSON } )
-	public Response crearPlan(Nodo nodo) throws SQLException, Exception{
+	public Response crearPlan(Plan plan) throws SQLException, Exception{
 		System.out.println("entreeeeee");
 		
 		RedetekApiTM tm = new RedetekApiTM(getPath());
 		try {
-			Nodo nodoNew = tm.crearNodo(nodo);
-			return Response.status( 200 ).entity( nodoNew ).build();	
+			Plan planNew = tm.crearPlan(plan);
+			return Response.status( 200 ).entity( planNew ).build();	
 		}catch( Exception e )
 		{
 			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );
