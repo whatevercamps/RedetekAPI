@@ -218,7 +218,13 @@ app.controller('agregarDispositivoClienteCtrl', ['$scope', '$state', '$statePara
                 valor == '6' ||
                 valor == '7' || 
                 valor == '8' ||
-                valor == '9'){
+                valor == '9' ||
+                valor == 'a' ||
+                valor == 'b' ||
+                valor == 'c' ||
+                valor == 'd' || 
+                valor == 'e' || 
+                valor == 'f'){
                 return true;
         }else{
             var x = document.getElementById(id);
