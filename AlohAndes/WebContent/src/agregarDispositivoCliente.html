@@ -21,13 +21,46 @@
 </div>
 
 <div class="form-group">
-  <label for="nombre"><strong>*</strong> Descripción</label>
-  <input type="text" class="form-control" id="nombre" placeholder="Ingrese una breve descripción" ng-model="data.descripcion" required>
+  <label for="descripcion"><strong>*</strong> Descripción</label>
+  <input type="text" class="form-control" id="descripcion" placeholder="Ingrese una breve descripción" ng-model="data.descripcion" required>
+</div>
+<div class="form-group">
+  <label for="proveedor"><strong>*</strong> Proveedor</label>
+  <input type="text" class="form-control" id="proveedor" placeholder="Ingrese una breve descripción" ng-model="data.proveedor" required>
+</div>
+<div class="form-group">
+  <div class="row">
+      <label class="col-sm-3" for="downstream"><strong>*</strong> Downstream</label>
+      <div class="col-sm-1"><h3></h3></div>
+      <label class="col-sm-3" for="upstream"><strong>*</strong> Upstream</label>
+      <div class="col-sm-1"><h3></h3></div>
+      <label class="col-sm-3" for="atenuacion"><strong>*</strong> Atenuación</label>
+      <div class="col-sm-1"><h3></h3></div>
+  </div>
+
+  <div class="row">
+      <div class="col-sm-3">
+        <input type="text" class="form-control" id="downstream" placeholder="Downstream" ng-model="data.downstream" required>
+      </div>
+      <div class="col-sm-1"><h3></h3></div>
+      <div class="col-sm-3">
+        <input type="text" class="form-control" id="upstream" placeholder="Upstream" ng-model="data.upstream" required>
+      </div>
+      <div class="col-sm-1"><h3></h3></div>
+      <div class="col-sm-3">
+        <input type="text" class="form-control" id="atenuacion" placeholder="Atenuación" ng-model="data.atenuacion" required>
+      </div>
+      <div class="col-sm-1"><h3></h3></div>
+  </div>
 </div>
 <div class="form-group">
   <div class="container">
+
     <div class="row">
-      <span>Wifi Mac</span>>
+      <span>Wifi Mac</span>
+    </div>
+    <div class="row">
+      
       <label class="col-sm-2" for="oct1"><strong>*</strong> Mac  1</label>
       <label class="col-sm-2" for="oct2"><strong>*</strong> Mac  2</label>
       <label class="col-sm-2" for="oct3"><strong>*</strong> Mac  3</label>
@@ -61,7 +94,7 @@
           <!--fin col-sm-3 a1-->
           <!--col-sm-1 a1-->
           <div class="col-sm-1">
-            <h3>:</h3>
+            <h3></h3>
           </div>
           <!--fin col-sm-1 a1-->
           <!--col-sm-3 a2-->
@@ -80,7 +113,7 @@
           <!--fin col-sm-3 a2-->
           <!--col-sm-1 a2-->
           <div class="col-sm-1">
-            <h3>:</h3>
+            <h3></h3>
           </div>
           <!--fin col-sm-1 a2-->  
           <!--col-sm-3 a3-->
@@ -99,7 +132,7 @@
           <!--fin col-sm-3 a3-->
           <!--col-sm-1 a3-->
           <div class="col-sm-1">
-            <h3>:</h3>
+            <h3></h3>
           </div>
           <!--fin col-sm-1 a3-->        
         </div>
@@ -130,7 +163,7 @@
         <!--fin col-sm-3 b1-->
         <!--col-sm-1 b1-->
         <div class="col-sm-1">
-          <h3>:</h3>
+          <h3></h3>
         </div>
         <!--fin col-sm-1 b1-->
         <!--col-sm-3 b2-->
@@ -149,7 +182,7 @@
         <!--fin col-sm-3 b2-->
         <!--col-sm-1 b2-->
         <div class="col-sm-1">
-          <h3>:</h3>
+          <h3></h3>
         </div>
         <!--fin col-sm-1 b2-->  
         <!--col-sm-3 b3-->
@@ -191,6 +224,185 @@
 </div>
 </div>
 </div>
+
+<!--EOC MAC-->
+
+  <div class="container">
+
+    <div class="row">
+      <span>EOC Mac</span>
+    </div>
+    <div class="row">
+      
+      <label class="col-sm-2" for="oct1"><strong>*</strong> Mac  1</label>
+      <label class="col-sm-2" for="oct2"><strong>*</strong> Mac  2</label>
+      <label class="col-sm-2" for="oct3"><strong>*</strong> Mac  3</label>
+      <label class="col-sm-2" for="oct4"><strong>*</strong> Mac  4</label>
+      <label class="col-sm-2" for="oct5"><strong>*</strong> Mac  4</label>
+      <label class="col-sm-2" for="oct6"><strong>*</strong> Mac  6</label>
+
+    </div>
+
+    <!--row-->
+    <div class="row">
+      <!--col-sm-6a-->
+      <div class="col-sm-6">
+        <!--container a-->
+        <div class="container">
+          <!--row a-->
+          <div class="row">
+            <!--col-sm-3 a1-->
+            <div class="col-sm-3">
+              <div class="container" style="padding: 0">
+                <div class="row" style="padding: 0">
+                  <div class="col-sm-6" style="padding: 0"> 
+                   <input type="text" style="text-transform: uppercase;" class="form-control col" id="eocMac11" maxlength="1" placeholder="F" required ng-model="data.eocMac1_1">
+                 </div>
+                 <div class="col-sm-6" style="padding: 0">
+                  <input type="text" style="text-transform: uppercase;" class="form-control col" id="eocMac12" maxlength="1" placeholder="F" required ng-model="data.eocMac1_2">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--fin col-sm-3 a1-->
+          <!--col-sm-1 a1-->
+          <div class="col-sm-1">
+            <h3></h3>
+          </div>
+          <!--fin col-sm-1 a1-->
+          <!--col-sm-3 a2-->
+          <div class="col-sm-3">
+            <div class="container" style="padding: 0">
+              <div class="row" style="padding: 0">
+                <div class="col-sm-6" style="padding: 0"> 
+                  <input type="text" style="text-transform: uppercase;" class="form-control col" id="eocMac21" maxlength="1" placeholder="A" required ng-model="data.eocMac2_1"> 
+                </div>
+                <div class="col-sm-6" style="padding: 0">  
+                  <input type="text" style="text-transform: uppercase;" class="form-control col" id="eocMac22" maxlength="1" placeholder="2" required ng-model="data.eocMac2_2">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--fin col-sm-3 a2-->
+          <!--col-sm-1 a2-->
+          <div class="col-sm-1">
+            <h3></h3>
+          </div>
+          <!--fin col-sm-1 a2-->  
+          <!--col-sm-3 a3-->
+          <div class="col-sm-3">
+            <div class="container" style="padding: 0">
+              <div class="row" style="padding: 0">
+                <div class="col-sm-6" style="padding: 0"> 
+                  <input type="text" style="text-transform: uppercase;" class="form-control col" id="eocMac31" maxlength="1" placeholder="1" required ng-model="data.eocMac3_1"> 
+                </div>
+                <div class="col-sm-6" style="padding: 0"> 
+                  <input type="text" style="text-transform: uppercase;" class="form-control col" id="eocMac32" maxlength="1" placeholder="2" required ng-model="data.eocMac3_2">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--fin col-sm-3 a3-->
+          <!--col-sm-1 a3-->
+          <div class="col-sm-1">
+            <h3></h3>
+          </div>
+          <!--fin col-sm-1 a3-->        
+        </div>
+        <!--fin row a-->
+      </div>
+      <!--fin container a-->
+    </div>
+    <!--fin col-sm-6a-->
+    <!--col-sm-6b-->
+    <div class="col-sm-6">
+      <!--container b-->
+      <div class="container">
+        <!--row b-->
+        <div class="row">
+          <!--col-sm-3 b1-->
+          <div class="col-sm-3">
+            <div class="container" style="padding: 0">
+              <div class="row" style="padding: 0">
+                <div class="col-sm-6" style="padding: 0"> 
+                 <input type="text" style="text-transform: uppercase;" class="form-control col" id="eocMac41" maxlength="1" placeholder="F" required ng-model="data.eocMac4_1">
+               </div>
+               <div class="col-sm-6" style="padding: 0">
+                <input type="text" style="text-transform: uppercase;" class="form-control col" id="eocMac42" maxlength="1" placeholder="F" required ng-model="data.eocMac4_2">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--fin col-sm-3 b1-->
+        <!--col-sm-1 b1-->
+        <div class="col-sm-1">
+          <h3></h3>
+        </div>
+        <!--fin col-sm-1 b1-->
+        <!--col-sm-3 b2-->
+        <div class="col-sm-3">
+          <div class="container" style="padding: 0">
+            <div class="row" style="padding: 0">
+              <div class="col-sm-6" style="padding: 0"> 
+                <input type="text" style="text-transform: uppercase;" class="form-control col" id="eocMac51" maxlength="1" placeholder="A" required ng-model="data.eocMac5_1"> 
+              </div>
+              <div class="col-sm-6" style="padding: 0">  
+                <input type="text" style="text-transform: uppercase;" class="form-control col" id="eocMac52" maxlength="1" placeholder="2" required ng-model="data.eocMac5_2">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--fin col-sm-3 b2-->
+        <!--col-sm-1 b2-->
+        <div class="col-sm-1">
+          <h3></h3>
+        </div>
+        <!--fin col-sm-1 b2-->  
+        <!--col-sm-3 b3-->
+        <div class="col-sm-3">
+          <div class="container" style="padding: 0">
+            <div class="row" style="padding: 0">
+              <div class="col-sm-6" style="padding: 0"> 
+                <input type="text" style="text-transform: uppercase;" class="form-control col" id="eocMac61" maxlength="1" placeholder="1" required ng-model="data.eocMac6_1"> 
+              </div>
+              <div class="col-sm-6" style="padding: 0"> 
+                <input type="text" style="text-transform: uppercase;" class="form-control col" id="eocMac62" maxlength="1" placeholder="2" required ng-model="data.eocMac6_2">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--fin col-sm-3 b3-->
+        <!--col-sm-1 b3-->
+        <div class="col-sm-1">
+          <h3></h3>
+        </div>
+        <!--fin col-sm-1 b3-->
+      </div>
+      <!--fin row b-->
+    </div>
+    <!--fin container b-->
+  </div>
+  <!--fin col-sm-6b-->
+</div>
+<!--fin row-->
+
+
+
+<div class="row">
+  <div class="col-sm-12" ng-if="!validar(data.eocMac1_1, 'eocMac11') || !validar(data.eocMac1_2, 'eocMac12') || !validar(data.eocMac2_1, 'eocMac21') || !validar(data.eocMac2_2, 'eocMac22') || !validar(data.eocMac3_1, 'eocMac31') || !validar(data.eocMac3_2, 'eocMac32') || !validar(data.eocMac4_1, 'eocMac41') || !validar(data.eocMac4_2, 'eocMac42')">
+    <div class="alert alert-warning">
+      <p>Sólo valores hexadecimales (A...F - 1...9)</p>
+    </div> 
+  </div>
+</div>
+</div>
+</div>
+<!--FIN EOC MAC-->
+
+
+
+
+
 <div class="form-group row">
   <div class="form-group col-sm-12" ng-if="!dispForm.$valid">
     <div class="alert alert-warning">

@@ -59,8 +59,12 @@
             <tr>
               <th>id</th>
               <th>Tipo</th>
-              <th>MAC</th>
+              <th>WIFI MAC</th>
+              <th>EOC MAC</th>
+              <th>Downstream</th>
+              <th>Upstream</th>
               <th>Descripción</th>
+              <th>Proveedor</th>
             </tr>
           </thead>
           <tbody>
@@ -74,10 +78,29 @@
             </a>
           </td>
           <td id="{{$index}}-mac">
-            <p style="padding: 10px 0;"> {{dispositivo.mac1_1}}{{dispositivo.mac1_2}}:{{dispositivo.mac2_1}}{{dispositivo.mac2_2}}:{{dispositivo.mac3_1}}{{dispositivo.mac3_2}}:{{dispositivo.mac4_1}}{{dispositivo.mac4_2}} </p>
+            <p style="padding: 10px 0;"> {{dispositivo.mac1_1}}{{dispositivo.mac1_2}}:{{dispositivo.mac2_1}}{{dispositivo.mac2_2}}:{{dispositivo.mac3_1}}{{dispositivo.mac3_2}}:{{dispositivo.mac4_1}}{{dispositivo.mac4_2}}:{{dispositivo.mac5_1}}{{dispositivo.mac5_2}}:{{dispositivo.mac6_1}}{{dispositivo.mac6_2}} </p>
+          </td>
+          <td id="{{$index}}-eocMac">
+            <p style="padding: 10px 0;"> {{dispositivo.eocMac1_1}}{{dispositivo.eocMac1_2}}:{{dispositivo.eocMac2_1}}{{dispositivo.eocMac2_2}}:{{dispositivo.eocMac3_1}}{{dispositivo.eocMac3_2}}:{{dispositivo.eocMac4_1}}{{dispositivo.eocMac4_2}}:{{dispositivo.eocMac5_1}}{{dispositivo.eocMac5_2}}:{{dispositivo.eocMac6_1}}{{dispositivo.eocMac6_2}} </p>
+          </td>
+          <td id="{{$index}}-donwstream">
+              <p style="padding: 10px 0;">{{dispositivo.downstream}}</p>
+            </a>
+          </td>
+          <td id="{{$index}}-upstream">
+              <p style="padding: 10px 0;">{{dispositivo.upstream}}</p>
+            </a>
+          </td>
+          <td id="{{$index}}-atenuacion">
+              <p style="padding: 10px 0;">{{dispositivo.atenuacion}}</p>
+            </a>
           </td>
           <td id="{{$index}}-descripcion">
             <p style="padding: 10px 0;"> {{dispositivo.descripcion}} </p>
+          </td>
+          <td id="{{$index}}-proveedor">
+              <p style="padding: 10px 0;">{{dispositivo.proveedor}}</p>
+            </a>
           </td>
         </tr>
       </tbody>

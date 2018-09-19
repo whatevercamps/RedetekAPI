@@ -747,23 +747,24 @@ public class RedetekApiTM {
 			String mac = disp.getMac1_1()+":"+disp.getMac1_2()+":"+
 					disp.getMac2_1()+":"+disp.getMac2_2()+":"+
 					disp.getMac3_1()+":"+disp.getMac3_2()+":"+
-					disp.getMac4_1()+":"+disp.getMac4_2()+
-					disp.getMac5_1()+":"+disp.getMac5_2()+
+					disp.getMac4_1()+":"+disp.getMac4_2()+":"+
+					disp.getMac5_1()+":"+disp.getMac5_2()+":"+
 					disp.getMac6_1()+":"+disp.getMac6_2();
-
+			System.out.println("wifi mac" + mac);
 			if(!darDispositivosPor(DAOTablaDispositivos.BUSQUEDA_POR_MACS, mac).isEmpty()) {
 				throw new Exception("Ya existe un dispositivo con dicha WifiMac");
 			}
 			
 			
-			mac = disp.getEocMac1_1()+":"+disp.getEocMac1_2()+":"+
+			String eocmac = disp.getEocMac1_1()+":"+disp.getEocMac1_2()+":"+
 					disp.getEocMac2_1()+":"+disp.getEocMac2_2()+":"+
 					disp.getEocMac3_1()+":"+disp.getEocMac3_2()+":"+
-					disp.getEocMac4_1()+":"+disp.getEocMac4_2()+
-					disp.getEocMac5_1()+":"+disp.getEocMac5_2()+
+					disp.getEocMac4_1()+":"+disp.getEocMac4_2()+":"+
+					disp.getEocMac5_1()+":"+disp.getEocMac5_2()+":"+
 					disp.getEocMac6_1()+":"+disp.getEocMac6_2();
-
-			if(!darDispositivosPor(DAOTablaDispositivos.BUSQUEDA_POR_EOC_MACS, mac).isEmpty()) {
+			
+			System.out.println("EOC mac" + eocmac);
+			if(!darDispositivosPor(DAOTablaDispositivos.BUSQUEDA_POR_EOC_MACS, eocmac).isEmpty()) {
 				throw new Exception("Ya existe un dispositivo con dicha EocMac");
 			}
 
