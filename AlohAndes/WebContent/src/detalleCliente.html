@@ -41,13 +41,13 @@
   <!--/col-3-->
   <div class="col-sm-9">
     <ul class="nav nav-tabs">
-      <li class="active nav-item"><a data-toggle="tab" data-target="#dispositivos" class="nav-link">Dispositivos</a>
+      <li class="nav-item"><a data-toggle="tab" data-target="#dispositivos" class="nav-link">Dispositivos</a>
       </li>
-      <li class="nav-item"><a data-toggle="tab" data-target="#ordenes" class="nav-link">Ordenes de Instalación</a>
+      <li class="nav-item active"><a data-toggle="tab" data-target="#ordenes" class="nav-link">Ordenes de Instalación</a>
       </li>
     </ul>
     <div class="tab-content">
-      <div class="tab-pane active" id="dispositivos">
+      <div class="tab-pane" id="dispositivos">
         <br>
         <button type="button" class="btn btn-primary" ui-sref="agregarDispositivoCliente({clienteId: cliente.cedula})" data-toggle="modal" data-target="#agregarDispositivoModal">
           Agregar Dispositivo
@@ -84,7 +84,7 @@
     </table>
   </div>
   <!--fin dispositivos div-->
-  <div class="tab-pane" id="ordenes">
+  <div class="tab-pane active" id="ordenes">
     <br>
     <button type="button" class="btn btn-primary" ui-sref="agregarOrdenCliente({clienteId: cliente.cedula})" data-toggle="modal" data-target="#agregarOrdenModal">
       Agregar Orden

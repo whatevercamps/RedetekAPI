@@ -167,7 +167,7 @@
 
 app.controller('clientesCtrl', ['$scope', '$state', '$stateParams', '$http', function ($scope, $state, $stateParams, $http) {
 
-    var ruta = "http://localhost:8080/RedetekAPIRest/rest/clientes";
+    var ruta = "http://192.168.1.2:8080/RedetekAPIRest/rest/clientes";
     $http.get(ruta).then(function (response) {
         $scope.clientes = response.data;
     }, function(response){
@@ -180,7 +180,7 @@ app.controller('clientesCtrl', ['$scope', '$state', '$stateParams', '$http', fun
 
 
 app.controller('agregarDispositivoClienteCtrl', ['$scope', '$state', '$stateParams', '$http', function ($scope, $state, $stateParams, $http) {
-    var ruta = "http://localhost:8080/RedetekAPIRest/rest/dispositivos/tiposDispositivo";
+    var ruta = "http://192.168.1.2:8080/RedetekAPIRest/rest/dispositivos/tiposDispositivo";
 
     $http.get(ruta).then(function (response) {
         $scope.tipos = response.data;
@@ -230,7 +230,7 @@ app.controller('agregarDispositivoClienteCtrl', ['$scope', '$state', '$statePara
 
 $scope.agregarDispositivoClienteFuncion = function () {
     console.log($scope.data);
-    $http.post('http://localhost:8080/RedetekAPIRest/rest/clientes/'+$state.params.clienteId+'/agregarDispositivo', $scope.data, config).then(function (response) {
+    $http.post('http://192.168.1.2:8080/RedetekAPIRest/rest/clientes/'+$state.params.clienteId+'/agregarDispositivo', $scope.data, config).then(function (response) {
         $state.go('clienteDetail', {clienteId: $state.params.clienteId}, {reload: true});
     },
     function(response){
@@ -247,7 +247,7 @@ $scope.agregarDispositivoClienteFuncion = function () {
 
 app.controller('nodosCtrl', ['$scope', '$state', '$stateParams', '$http', function ($scope, $state, $stateParams, $http) {
 
-    var ruta = "http://localhost:8080/RedetekAPIRest/rest/nodos";
+    var ruta = "http://192.168.1.2:8080/RedetekAPIRest/rest/nodos";
     $http.get(ruta).then(function (response) {
         $scope.nodos = response.data;
     }, function(response){
@@ -276,7 +276,7 @@ var config = {
 
 
 $scope.crearNodo = function () {
-    $http.post('http://localhost:8080/RedetekAPIRest/rest/nodos', $scope.data, config).then(function (response) {
+    $http.post('http://192.168.1.2:8080/RedetekAPIRest/rest/nodos', $scope.data, config).then(function (response) {
         $state.go('verNodos', {}, {reload: true});
     }, function(response){
         console.log(response.data);
@@ -291,12 +291,12 @@ $scope.crearNodo = function () {
 
 app.controller('crearClienteCtrl', ['$scope', '$state', '$stateParams', '$http', function ($scope, $state, $stateParams, $http) {
 
-    var ruta = "http://localhost:8080/RedetekAPIRest/rest/nodos";
+    var ruta = "http://192.168.1.2:8080/RedetekAPIRest/rest/nodos";
     $http.get(ruta).then(function (response) {
         $scope.nodos = response.data;
     });      
 
-    ruta = "http://localhost:8080/RedetekAPIRest/rest/planes";
+    ruta = "http://192.168.1.2:8080/RedetekAPIRest/rest/planes";
     $http.get(ruta).then(function (response) {
         $scope.planes = response.data;
     });
@@ -325,7 +325,7 @@ app.controller('crearClienteCtrl', ['$scope', '$state', '$stateParams', '$http',
 
     $scope.crearCliente = function () {
         console.log($scope.data);
-        $http.post('http://localhost:8080/RedetekAPIRest/rest/clientes?idNodo=' + $scope.nodoX.idNodo, $scope.data, config).then(function (response) {
+        $http.post('http://192.168.1.2:8080/RedetekAPIRest/rest/clientes?idNodo=' + $scope.nodoX.idNodo, $scope.data, config).then(function (response) {
             $state.go('verClientes', {}, {reload: true});
         },
         function(response){
@@ -362,11 +362,14 @@ app.controller('agregarOrdenCtrl', ['$scope', '$state', '$stateParams', '$http',
     }, {
         "id": 5,
         "nombre": "Retiro"
+    },{
+        "id": 6,
+        "nombre": "Corte"
     }];
 
     
 
-    var ruta = "http://localhost:8080/RedetekAPIRest/rest/planes";
+    var ruta = "http://192.168.1.2:8080/RedetekAPIRest/rest/planes";
     $http.get(ruta).then(function (response) {
         $scope.planes = response.data;
     });
@@ -383,7 +386,7 @@ app.controller('agregarOrdenCtrl', ['$scope', '$state', '$stateParams', '$http',
 
     $scope.crearOrden = function () {
         console.log($state.params.clienteId);
-        $http.post('http://localhost:8080/RedetekAPIRest/rest/ordenes/crearOrden?idCliente=' + $state.params.clienteId, $scope.data, config).then(function (response) {
+        $http.post('http://192.168.1.2:8080/RedetekAPIRest/rest/ordenes/crearOrden?idCliente=' + $state.params.clienteId, $scope.data, config).then(function (response) {
             $state.go('clienteDetail', {clienteId: $state.params.clienteId}, {reload: true});
         },
         function(response){
@@ -401,7 +404,7 @@ app.controller('agregarOrdenCtrl', ['$scope', '$state', '$stateParams', '$http',
 app.controller('detalleClienteCtrl', ['$scope', '$state', '$stateParams', '$http', function ($scope, $state, $stateParams, $http) {
     if(($state.params.clienteId !== undefined) && ($state.params.clienteId !== null)){
         console.log("entro al detalle del Cliente");
-        var ruta = "http://localhost:8080/RedetekAPIRest/rest/clientes/" + $state.params.clienteId;
+        var ruta = "http://192.168.1.2:8080/RedetekAPIRest/rest/clientes/" + $state.params.clienteId;
         $http.get(ruta).then(function (response) {
             $scope.cliente = response.data;
             var i = 0;
@@ -423,7 +426,7 @@ app.controller('verFotosOrdenCtrl', ['$scope', '$state', '$stateParams', '$http'
         if($scope.fotos == null || $scope.fotos == undefined){
             console.log("paila, sigue...");
             $scope.listasLasFotos = false;
-            var ruta2 = "http://localhost:8080/RedetekAPIRest/rest/ordenes/"+$state.params.idOrden+"/descargarfotosftp";
+            var ruta2 = "http://192.168.1.2:8080/RedetekAPIRest/rest/ordenes/"+$state.params.idOrden+"/descargarfotosftp";
             $http.get(ruta2).then(function (response) {
                 $scope.fotos = response.data;
                 $scope.listasLasFotos = true;
@@ -442,12 +445,12 @@ app.controller('verFotosOrdenCtrl', ['$scope', '$state', '$stateParams', '$http'
 
 
 app.controller('modificarClienteCtrl', ['$scope', '$state', '$stateParams', '$http', function ($scope, $state, $stateParams, $http) {
-    var ruta = "http://localhost:8080/RedetekAPIRest/rest/nodos";
+    var ruta = "http://192.168.1.2:8080/RedetekAPIRest/rest/nodos";
     $http.get(ruta).then(function (response) {
         $scope.nodos = response.data;
     });      
 
-    ruta = "http://localhost:8080/RedetekAPIRest/rest/planes";
+    ruta = "http://192.168.1.2:8080/RedetekAPIRest/rest/planes";
     $http.get(ruta).then(function (response) {
         $scope.planes = response.data;
     });
@@ -456,11 +459,11 @@ app.controller('modificarClienteCtrl', ['$scope', '$state', '$stateParams', '$ht
     if ($state.params.idCliente !== undefined) {
         if( $state.params.idCliente !== null ){
             console.log('entró a modificar cliente');
-            var ruta = "http://localhost:8080/RedetekAPIRest/rest/clientes/" + $state.params.idCliente;
+            var ruta = "http://192.168.1.2:8080/RedetekAPIRest/rest/clientes/" + $state.params.idCliente;
             $http.get(ruta).then(function (response) {
                 $scope.cliente = response.data;
 
-                $http.get("http://localhost:8080/RedetekAPIRest/rest/nodos/busq?filtro=3&parametro='" + $scope.cliente.nombreNodo + "'").then(function (response) {
+                $http.get("http://192.168.1.2:8080/RedetekAPIRest/rest/nodos/busq?filtro=3&parametro='" + $scope.cliente.nombreNodo + "'").then(function (response) {
                     $scope.nodoX = response.data;
                 });    
 
@@ -473,7 +476,7 @@ app.controller('modificarClienteCtrl', ['$scope', '$state', '$stateParams', '$ht
 
                 $scope.modificarCliente = function () {
                     console.log($scope.data);
-                    $http.put('http://localhost:8080/RedetekAPIRest/rest/clientes/' + $state.params.idCliente + '?idNodo=' + $scope.nodoX.id, $scope.cliente, config).then(function (response) {
+                    $http.put('http://192.168.1.2:8080/RedetekAPIRest/rest/clientes/' + $state.params.idCliente + '?idNodo=' + $scope.nodoX.id, $scope.cliente, config).then(function (response) {
                         $state.go('verClientes', {}, {reload: true});
                     },
                     function(response){
@@ -501,12 +504,12 @@ app.controller('modificarClienteCtrl', ['$scope', '$state', '$stateParams', '$ht
 }]);
 
 app.controller('borrarClienteCtrl', ['$scope', '$state', '$stateParams', '$http', function ($scope, $state, $stateParams, $http) {
-    var ruta = "http://localhost:8080/RedetekAPIRest/rest/nodos";
+    var ruta = "http://192.168.1.2:8080/RedetekAPIRest/rest/nodos";
 
     if ($state.params.idCliente !== undefined) {
         if( $state.params.idCliente !== null ){
             console.log('entró');
-            var ruta = "http://localhost:8080/RedetekAPIRest/rest/clientes/" + $state.params.idCliente;
+            var ruta = "http://192.168.1.2:8080/RedetekAPIRest/rest/clientes/" + $state.params.idCliente;
 
             $scope.borrarCliente = function () {
                 console.log($scope.data);

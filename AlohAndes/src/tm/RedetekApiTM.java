@@ -880,7 +880,7 @@ public class RedetekApiTM {
 
 
 		List<String> nombres = new ArrayList<String>();
-		ClienteFTP cliente = new ClienteFTP("ftp.techcis.com.co", 21, "usuario1@techcis.com.co", "clave1");
+		ClienteFTP cliente = new ClienteFTP("192.168.1.251", 21, "superuser", "superuser01");
 
 		try {
 			if(cliente.conectar()) {
@@ -908,12 +908,12 @@ public class RedetekApiTM {
 
 		System.out.println("ENTRANDO AL TM........");
 		List<String> nombres = new ArrayList<String>(); 
-		ClienteFTP cliente = new ClienteFTP("ftp.techcis.com.co", 21, "usuario1@techcis.com.co", "clave1");
+		ClienteFTP cliente = new ClienteFTP("192.168.1.251", 21, "superuser", "superuser01");
 
 		try {
 			if(cliente.conectar()) {
 				System.out.println("se logró conectar");
-				nombres = cliente.bajarArchivosDirectorio("/"+idOrden, "/Users/whatevercamps/wildfly-10.0.0.Final/standalone/deployments/RedetekAPIRest.war/resources/img/ordenes", idOrden);
+				nombres = cliente.bajarArchivosDirectorio("/"+idOrden, "C://Users/Administrador/wildfly-10.0.0.Final/standalone/deployments/RedetekAPIRest.war/resources/img/ordenes", idOrden);
 				for(String no : nombres) {
 					System.out.println(no);
 				}
@@ -938,13 +938,13 @@ public class RedetekApiTM {
 		System.out.println(nombre);
 		nombre += ".jpg";
 		System.out.println(nombre);
-		ClienteFTP cliente = new ClienteFTP("ftp.techcis.com.co", 21, "usuario1@techcis.com.co", "clave1");
+		ClienteFTP cliente = new ClienteFTP("192.168.1.251", 21, "superuser", "superuser01");
 
 		try {
 			if(cliente.conectar()) {
 				System.out.println("se logró conectar");
 				String src = "/"+idOrden+"/"+nombre;
-				String des = "/Users/whatevercamps/wildfly-10.0.0.Final/standalone/deployments/RedetekAPIRest.war/resources/img/ordenes"+"/"+idOrden+"_"+nombre;
+				String des = "C://Users/Administrador/wildfly-10.0.0.Final/standalone/deployments/RedetekAPIRest.war/resources/img/ordenes"+"/"+idOrden+"_"+nombre;
 				if(!cliente.bajarArchivo(src, des)) {
 					throw new Exception("Falló la descarga del archivo con la ruta de origen " + src + " y la ruta de destino " + des);
 				}
@@ -1083,9 +1083,9 @@ public class RedetekApiTM {
 				throw new Exception("Ya hay una con orden con el id  " + orden.getId());
 			}
 
-			if (!darOrdenesPor(DAOTablaOrdenes.BUSQUEDA_POR_CLIENTE_ACTIVAS, idCliente.toString()).isEmpty()) {
-				throw new Exception("El cliente con la cédula " + idCliente +  " ya tiene una orden pendiente.");
-			}
+//			if (!darOrdenesPor(DAOTablaOrdenes.BUSQUEDA_POR_CLIENTE_ACTIVAS, idCliente.toString()).isEmpty()) {
+//				throw new Exception("El cliente con la cédula " + idCliente +  " ya tiene una orden pendiente.");
+//			}
 
 			
 			dao.setConn(conn);
@@ -1107,7 +1107,7 @@ public class RedetekApiTM {
 				}
 			}
 			
-			ClienteFTP cliente = new ClienteFTP("ftp.techcis.com.co", 21, "usuario1@techcis.com.co", "clave1");
+			ClienteFTP cliente = new ClienteFTP("192.168.1.251", 21, "superuser", "superuser01");
 			
 			if(cliente.conectar()) {
 				if(cliente.crearDirectorio("/" + ord.get(0).getId() )) {
