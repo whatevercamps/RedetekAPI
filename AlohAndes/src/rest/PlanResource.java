@@ -58,14 +58,13 @@ public class PlanResource {
 
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON } )
-	@Produces({ MediaType.APPLICATION_JSON } )
 	public Response crearPlan(Plan plan) throws SQLException, Exception{
 		System.out.println("entreeeeee");
 		
 		RedetekApiTM tm = new RedetekApiTM(getPath());
 		try {
-			Plan planNew = tm.crearPlan(plan);
-			return Response.status( 200 ).entity( planNew ).build();	
+			tm.crearPlan(plan);
+			return Response.status( 200 ).entity( "ok" ).build();	
 		}catch( Exception e )
 		{
 			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );

@@ -1165,10 +1165,9 @@ public class RedetekApiTM {
 		return ret;
 	}
 
-	public Plan crearPlan(Plan nuevo) throws SQLException, Exception{
+	public void crearPlan(Plan nuevo) throws SQLException, Exception{
 		boolean conexionPropia = false; 
 		DAOTablaPlanes dao = new DAOTablaPlanes();
-		List<Plan> ret = null;
 		try {
 
 			if(this.conn == null || this.conn.isClosed()){
@@ -1180,12 +1179,8 @@ public class RedetekApiTM {
 			}
 
 
-			//verificar reglas de negocio
-			
 
-			if (!darPlanesPor(DAOTablaPlanes.BUSQUEDA_POR_ID, nuevo.getId().toString()).isEmpty()) {
-				throw new Exception("Ya hay un plan con el id " + nuevo.getId());
-			}
+			
 
 
 			dao.setConn(conn);
@@ -1195,11 +1190,7 @@ public class RedetekApiTM {
 			System.out.println("lo creo");
 			//verificar 
 
-			ret = darPlanesPor(DAOTablaPlanes.BUSQUEDA_POR_ID, nuevo.getId().toString());
 
-			if(ret.isEmpty()) {
-				throw new Exception("No se guardo correctamente el plan, revisar xd...");
-			}
 
 			if(conexionPropia)
 				this.conn.commit();
@@ -1225,7 +1216,6 @@ public class RedetekApiTM {
 				throw exception;
 			}
 		}
-		return ret.get(0);
 	}
 
 	
