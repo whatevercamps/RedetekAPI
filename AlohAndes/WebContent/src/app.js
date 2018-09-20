@@ -68,6 +68,20 @@
             }
         });   
 
+        $stateProvider.state('crearPlan', {
+            url: '/planes/crearPlan',
+            param: {
+                
+            },
+            views: {
+                'ViewCrearPlan': {
+                    templateUrl: 'src/crearPlan.html',
+                    controller: 'crearPlanCtrl',
+                    controllerAs: 'ctrl'
+                }
+            }
+        });   
+
         $stateProvider.state('borrarCliente', {
             url: '/clientes/borrarCliente/{idCliente:int}',
             param: {
@@ -268,7 +282,7 @@ app.controller('nodosCtrl', ['$scope', '$state', '$stateParams', '$http', functi
 app.controller('crearNodoCtrl', ['$scope', '$state', '$stateParams', '$http', function ($scope, $state, $stateParams, $http) {
 
 
- $scope.data = {
+   $scope.data = {
     "id": 1,
     "clientes": []
 };
@@ -292,6 +306,35 @@ $scope.crearNodo = function () {
     });
 };
 }]);
+
+
+app.controller('crearPlanCtrl', ['$scope', '$state', '$stateParams', '$http', function ($scope, $state, $stateParams, $http) {
+
+
+   $scope.data = {
+    "id": 1
+};
+
+var config = {
+    headers : {
+        'Content-Type': 'application/json'
+    }
+};
+
+
+
+$scope.crearPlan = function () {
+    $http.post('http://192.168.1.2:8080/RedetekAPIRest/rest/planes', $scope.data, config).then(function (response) {
+        $state.go('verPlanes', {}, {reload: true});
+    }, function(response){
+        console.log(response.data);
+        $state.go('verPlanes', {}, {reload: true});
+        document.getElementById("errorText").innerHTML = response.data.ERROR;
+        $('#errorModal').modal("show");
+    });
+};
+}]);
+
 
 
 

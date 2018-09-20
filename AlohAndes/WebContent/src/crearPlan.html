@@ -1,0 +1,25 @@
+<form>
+  <div class="form-group">
+    <label for="nombre">Nombre</label>
+    <input type="text" class="form-control" id="nombre" placeholder="Ingrese el nombre identificativo del nodo" required ng-model="data.nombre">
+  </div>
+  <div class="form-group">
+    <label for="descripcion">Descripción</label>
+    <input type="text" class="form-control" id="descripcion" placeholder="Ingrese una breve descripción del plan" required ng-model="data.descripcion">
+  </div>
+
+    <div class="form-group">
+    <label for="velocidadInternet">Velocidad de Navegación</label>
+    <input type="number" class="form-control" id="velocidadInternet" placeholder="Mbps" required ng-model="data.velocidadInternet">
+    <small id="ayuda" class="form-text text-muted">si no cuenta con internet el plan, ingrese el valor 0</small>
+      
+    <label for="cantidadCanales">Cantidad de canales </label>
+    <input type="number" class="form-control" id="cantidadCanales" required ng-model="data.cantidadCanales">
+  </div>
+
+
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary" ng-click="crearPlan()" data-dismiss="modal" aria-describedby="ayuda">Confirmar registro</button>
+    <small id="ayuda" class="form-text text-muted">Por favor, verifique cada campo dos veces antes de confirmar el registro. </small>
+  </div>
+</form>

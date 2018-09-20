@@ -49,6 +49,15 @@
               <a class="dropdown-item" ui-sref="crearCliente" data-toggle="modal" data-target="#crearClienteModal">Crear cliente</a>
             </div>
           </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              PLANES
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" ui-sref="verPlanes">Ver Planes</a>
+              <a class="dropdown-item" ui-sref="crearPlan" data-toggle="modal" data-target="#crearPlanModal">Crear plan</a>
+            </div>
+          </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -114,6 +123,22 @@
       </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="crearPlanModal" tabindex="-1" role="dialog" aria-labelledby="crearPlanModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="crearPlanModalLabel"> Crear Plan </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div ui-view="ViewCrearPlan"> </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="modal fade" id="modificarClienteModal" tabindex="-1" role="dialog" aria-labelledby="modificarClienteModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
