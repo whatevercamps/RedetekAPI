@@ -1,0 +1,21 @@
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Nombre</th>
+			<th>Descripción</th>
+			<th>Velocidad de Internet</th>
+			<th>Cantidad de Canales</th>		
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="plan in planes">
+			<td id="{{$index}}-id"><p style="padding: 10px 0;">{{plan.id}}</p></td>
+			<td id="{{$index}}-nombre"><p style="padding: 10px 0;">{{plan.nombre}}</p></td>	
+			<td id="{{$index}}-descripcion"><p style="padding: 10px 0;">{{plan.descripcion}}</p></td>
+			<td id="{{$index}}-velocidadInternet"><p style="padding: 10px 0;">{{plan.velocidadInternet}}</p></td>
+			<td id="{{$index}}-cantidadCanales"><p style="padding: 10px 0;">{{plan.cantidadCanales}}</p></td>
+		</tr>
+	</tbody>
+</table>

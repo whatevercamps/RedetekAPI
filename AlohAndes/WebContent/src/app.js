@@ -22,6 +22,21 @@
             }
         });
 
+        $stateProvider.state('verPlanes', {
+            url: '/planes/list',
+            params: {
+                filtro: null,
+                parametro: null
+            },
+            views: {
+                'mainView': {
+                    templateUrl: 'src/planes.html',
+                    controller: 'planesCtrl',
+                    controllerAs: 'ctrl'
+                }
+            }
+        });        
+
         $stateProvider.state('crearNodo', {
             url: '/nodos/crearNodo',
             params: {
@@ -187,6 +202,18 @@ app.controller('clientesCtrl', ['$scope', '$state', '$stateParams', '$http', fun
     }, function(response){
         console.log(response.data);
         $state.go('verNodos', {}, {reload: true});
+        document.getElementById("errorText").innerHTML = response.data.ERROR;
+        $('#errorModal').modal("show");
+    });
+}]);
+
+app.controller('planesCtrl', ['$scope', '$state', '$stateParams', '$http', function ($scope, $state, $stateParams, $http) {
+
+    var ruta = "http://192.168.1.2:8080/RedetekAPIRest/rest/planes";
+    $http.get(ruta).then(function (response) {
+        $scope.planes = response.data;
+    }, function(response){
+        console.log(response.data);
         document.getElementById("errorText").innerHTML = response.data.ERROR;
         $('#errorModal').modal("show");
     });
