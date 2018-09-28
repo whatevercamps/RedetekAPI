@@ -251,6 +251,7 @@ app.controller('agregarDispositivoClienteCtrl', ['$scope', '$state', '$statePara
                 valor == 'D' || 
                 valor == 'E' || 
                 valor == 'F' || 
+                valor == '0' ||
                 valor == '1' || 
                 valor == '2' || 
                 valor == '3' ||

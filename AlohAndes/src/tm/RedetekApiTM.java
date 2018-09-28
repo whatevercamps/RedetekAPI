@@ -157,7 +157,7 @@ public class RedetekApiTM {
 				this.conn = darConexion(); 
 				conexionPropia = true; 
 				this.conn.setAutoCommit(false);
-				this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				//this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				this.savepoint = this.conn.setSavepoint();
 			}
 
@@ -223,7 +223,7 @@ public class RedetekApiTM {
 				this.conn = darConexion(); 
 				conexionPropia = true; 
 				this.conn.setAutoCommit(false);
-				this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				//this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				this.savepoint = this.conn.setSavepoint();
 			}
 
@@ -525,7 +525,7 @@ public class RedetekApiTM {
 				this.conn = darConexion(); 
 				conexionPropia = true; 
 				this.conn.setAutoCommit(false);
-				this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				//this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				this.savepoint = this.conn.setSavepoint();
 			}
 
@@ -606,7 +606,7 @@ public class RedetekApiTM {
 				this.conn = darConexion(); 
 				conexionPropia = true; 
 				this.conn.setAutoCommit(false);
-				this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				//this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				this.savepoint = this.conn.setSavepoint();
 			}
 
@@ -665,7 +665,7 @@ public class RedetekApiTM {
 				this.conn = darConexion(); 
 				conexionPropia = true; 
 				this.conn.setAutoCommit(false);
-				this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				//this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				this.savepoint = this.conn.setSavepoint();
 			}
 
@@ -731,7 +731,7 @@ public class RedetekApiTM {
 				this.conn = darConexion(); 
 				conexionPropia = true; 
 				this.conn.setAutoCommit(false);
-				this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				//this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				this.savepoint = this.conn.setSavepoint();
 			}
 
@@ -1089,7 +1089,7 @@ public class RedetekApiTM {
 				this.conn = darConexion(); 
 				conexionPropia = true; 
 				this.conn.setAutoCommit(false);
-				this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				//this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				this.savepoint = this.conn.setSavepoint();
 			}
 			
@@ -1174,7 +1174,7 @@ public class RedetekApiTM {
 				this.conn = darConexion(); 
 				conexionPropia = true; 
 				this.conn.setAutoCommit(false);
-				this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				//this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				this.savepoint = this.conn.setSavepoint();
 			}
 
